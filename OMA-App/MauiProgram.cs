@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
+using CommunityToolkit.Maui;
 namespace OMA_App
 {
     public static class MauiProgram
@@ -9,16 +9,21 @@ namespace OMA_App
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                // Initialize the .NET MAUI Community Toolkit by adding the below line of code
+                .UseMauiCommunityToolkit()
+                // After initializing the .NET MAUI Community Toolkit, optionally add additional fonts
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+            // Continue initializing your .NET MAUI App here
 
+            #if DEBUG
+            builder.Logging.AddDebug();
+
+            #endif
             return builder.Build();
         }
     }
