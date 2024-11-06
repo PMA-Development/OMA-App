@@ -7,16 +7,6 @@
         android:roundIcon="@mipmap/appicon_round"
         android:supportsRtl="true">
 
-		<!-- Register the activity for handling custom URI scheme -->
-		<activity android:name="microsoft.identity.client.AuthenticationActivity"
-                  android:exported="true">
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="myapp" android:host="auth" />
-			</intent-filter>
-		</activity>
 
 		<!-- Other activities or configurations can be added here if necessary -->
 
@@ -25,4 +15,10 @@
 	<!-- Permissions needed for the app -->
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<queries>
+	<intent>
+		<action android:name="android.support.customtabs.action.CustomTabsService" />
+	</intent>
+</queries>
+
 </manifest>

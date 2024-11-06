@@ -1,17 +1,24 @@
-﻿using OMA_App.Authentication;
+﻿using IdentityModel.OidcClient;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using OMA_App.Authentication;
 using OMA_App.Pages;
 using System.Diagnostics;
+using System.Text;
 
 namespace OMA_App
 {
     public partial class MainPage : ContentPage
     {
-        private readonly OidcAuthenticationService _authService;
+
+        private readonly OidcClient _client = default!;
+        private string? _currentAccessToken;
         public IEnumerable<Island> Islands { get; set; } = [];
 
-        public MainPage()
+        public MainPage(OidcClient client)
         {
             InitializeComponent();
+            _client = client;
             List<Island> list = new List<Island>();
             for (int i = 1; i < 9; i++)
             {
@@ -26,7 +33,7 @@ namespace OMA_App
             }
             Islands = list;
             _collectionView.ItemsSource = Islands;
-            _authService = new OidcAuthenticationService();
+           
         }
 
         private async void OpenIsland(object sender, TappedEventArgs e)
@@ -36,18 +43,41 @@ namespace OMA_App
 
         private async void OnLoginClicked(object sender, EventArgs e)
         {
-            var result = await _authService.LoginAsync();
-            if (result != null)
+            //editor.Text = "Login Clicked";
+
+            var result = await _client.LoginAsync();
+
+            if (result.IsError)
             {
-                Console.WriteLine("User logged in successfully.");
+                //editor.Text = result.Error;
+                return;
             }
+
+            _currentAccessToken = result.AccessToken;
+
+            var sb = new StringBuilder(128);
+
+            sb.AppendLine("claims:");
+            foreach (var claim in result.User.Claims)
+            {
+                sb.AppendLine($"{claim.Type}: {claim.Value}");
+            }
+
+            sb.AppendLine();
+            sb.AppendLine("access token:");
+            sb.AppendLine(result.AccessToken);
+
+            if (!string.IsNullOrWhiteSpace(result.RefreshToken))
+            {
+                sb.AppendLine();
+                sb.AppendLine("refresh token:");
+                sb.AppendLine(result.RefreshToken);
+            }
+
+            //editor.Text = sb.ToString();
         }
 
 
-        private async void OnLogoutClicked(object sender, EventArgs e)
-        {
-            await _authService.LogoutAsync();
-        }
     }
 
    

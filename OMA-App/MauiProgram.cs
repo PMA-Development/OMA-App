@@ -1,11 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using IdentityModel.OidcClient;
+using OMA_App.Authentication;
 namespace OMA_App
 {
     public static class MauiProgram
     {
+
+
         public static MauiApp CreateMauiApp()
         {
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -18,9 +23,23 @@ namespace OMA_App
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            // Continue initializing your .NET MAUI App here
+            builder.Services.AddSingleton(new OidcClient(new()
+            {
+                Authority = "https://localhost:5000",
 
-            #if DEBUG
+                ClientId = "OMA-Maui",
+                Scope = "openid profile email role",
+                RedirectUri = "myapp://",
+                PostLogoutRedirectUri = "myapp://",
+                
+
+
+                Browser = new WebAuthenticatorBrowser()
+            }));
+
+            // Continue initializing your .NET MAUI App here
+            builder.Services.AddSingleton<MainPage>();
+#if DEBUG
             builder.Logging.AddDebug();
 
             #endif

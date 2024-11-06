@@ -1,4 +1,5 @@
-﻿using IdentityModel.OidcClient.Browser;
+﻿using IdentityModel.Client;
+using IdentityModel.OidcClient.Browser;
 using Microsoft.Maui.Authentication;
 using System;
 using System.Threading;
@@ -9,19 +10,21 @@ namespace OMA_App.Authentication
 {
     public class WebAuthenticatorBrowser : IdentityModel.OidcClient.Browser.IBrowser
     {
-        public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
+        public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken = default)
         {
             try
             {
-                var authResult = await WebAuthenticator.AuthenticateAsync(
+                var result = await WebAuthenticator.Default.AuthenticateAsync(
                     new Uri(options.StartUrl),
-                    new Uri(options.EndUrl)
-                );
+                    new Uri(options.EndUrl));
+
+                var url = new RequestUrl("myapp://callback")
+                    .Create(new Parameters(result.Properties));
 
                 return new BrowserResult
                 {
-                    Response = authResult?.ToString() ?? string.Empty,
-                    ResultType = BrowserResultType.Success
+                    Response = url,
+                    ResultType = BrowserResultType.Success,
                 };
             }
             catch (TaskCanceledException)
@@ -31,14 +34,7 @@ namespace OMA_App.Authentication
                     ResultType = BrowserResultType.UserCancel
                 };
             }
-            catch (Exception ex)
-            {
-                return new BrowserResult
-                {
-                    ResultType = BrowserResultType.UnknownError,
-                    Error = ex.Message
-                };
-            }
         }
+
     }
 }
