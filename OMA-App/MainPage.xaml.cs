@@ -1,25 +1,43 @@
-﻿namespace OMA_App
+﻿using OMA_App.Pages;
+using System.Diagnostics;
+
+namespace OMA_App
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        public IEnumerable<Island> Islands { get; set; } = [];
 
         public MainPage()
         {
             InitializeComponent();
+            List<Island> list = new List<Island>();
+            for (int i = 1; i < 9; i++)
+            {
+                Island island = new()
+                {
+                    IslandID = i,
+                    Title = "Nordsø " + i,
+                    Abbreviation = "NS" + i,
+                    TurbineID = i,
+                };
+                list.Add(island);
+            }
+            Islands = list;
+            _collectionView.ItemsSource = Islands;
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private async void OpenIsland(object sender, TappedEventArgs e)
         {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            await Navigation.PushAsync(new IslandPage());
         }
+    }
+
+    public class Island
+    {
+        public int IslandID { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Abbreviation { get; set; } = string.Empty;
+        public int TurbineID { get; set; }
     }
 
 }

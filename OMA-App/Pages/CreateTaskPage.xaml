@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OMA_App.Pages.CreateTaskPage"
+             Title="CreateTaskPage">
+    <VerticalStackLayout Padding="10">
+        <Label Text="Title: "/>
+        <Entry Placeholder="placeholder"/>
+        <Label Text="Type: "/>
+        <Entry Placeholder="placeholder"/>
+        <Label Text="Level: "/>
+        <Entry Placeholder="placeholder"/>
+        <Label Text="Description: "/>
+        <Editor Placeholder="Enter your response here" HeightRequest="150"/>
+        <Button HorizontalOptions="Center" Margin="0,20" WidthRequest="150"  Text="Create"/>
+    </VerticalStackLayout>
+</ContentPage>
