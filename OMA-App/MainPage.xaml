@@ -25,6 +25,8 @@
                                 <Label Background="LightGreen" Text="Task 2" FontSize="Medium" FontAttributes="Bold" Padding="20,0,0,10"/>
                                 <Label Background="LightGreen" Text="Task 3" FontSize="Medium" FontAttributes="Bold" Padding="20,0,0,10"/>
                             </VerticalStackLayout>
+                            <Button Text="Login" Clicked="OnLoginClicked" />
+                            <Button Text="Logout" Clicked="OnLogoutClicked" />
                         </StackLayout>
                     </Grid>
                 </Frame>

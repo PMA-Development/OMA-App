@@ -1,10 +1,12 @@
-﻿using OMA_App.Pages;
+﻿using OMA_App.Authentication;
+using OMA_App.Pages;
 using System.Diagnostics;
 
 namespace OMA_App
 {
     public partial class MainPage : ContentPage
     {
+        private readonly OidcAuthenticationService _authService;
         public IEnumerable<Island> Islands { get; set; } = [];
 
         public MainPage()
@@ -24,13 +26,31 @@ namespace OMA_App
             }
             Islands = list;
             _collectionView.ItemsSource = Islands;
+            _authService = new OidcAuthenticationService();
         }
 
         private async void OpenIsland(object sender, TappedEventArgs e)
         {
             await Navigation.PushAsync(new IslandPage());
         }
+
+        private async void OnLoginClicked(object sender, EventArgs e)
+        {
+            var result = await _authService.LoginAsync();
+            if (result != null)
+            {
+                Console.WriteLine("User logged in successfully.");
+            }
+        }
+
+
+        private async void OnLogoutClicked(object sender, EventArgs e)
+        {
+            await _authService.LogoutAsync();
+        }
     }
+
+   
 
     public class Island
     {
