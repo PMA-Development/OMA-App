@@ -33,9 +33,10 @@ namespace OMA_App
                 Timeout = TimeSpan.FromMinutes(2) // Increase timeout to 2 minutes or adjust as needed
             };
 
+
             builder.Services.AddSingleton(new OidcClient(new()
             {
-                Authority = "https://53c7-85-203-210-151.ngrok-free.app", // Your IdentityServer URL
+                Authority = "https://dlx83tgs-5000.euw.devtunnels.ms", // Your IdentityServer URL
                 ClientId = "OMA-Maui", // Your Client ID
                 Scope = "openid profile email api role", // Scopes needed
                 RedirectUri = "myapp://", // Custom URI scheme for your MAUI app
@@ -44,6 +45,11 @@ namespace OMA_App
                 // Use the WebAuthenticatorBrowser for authentication
                 Browser = new WebAuthenticatorBrowser(),
 
+                HttpClientFactory = (options) =>
+                {
+                    var handler = new HttpsClientHandlerService();
+                    return new HttpClient(handler.GetPlatformMessageHandler());
+                },
                 // Backchannel handler for HTTPS requests
                 BackchannelHandler = handler
             }));
