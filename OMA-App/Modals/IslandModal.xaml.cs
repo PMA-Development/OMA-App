@@ -8,4 +8,9 @@ public partial class IslandModal : Popup
 	{
 		InitializeComponent();
 	}
+
+    private void Close_Button(object sender, EventArgs e)
+    {
+        Close();
+    }
 }
