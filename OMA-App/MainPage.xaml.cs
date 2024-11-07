@@ -3,19 +3,20 @@ using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using OMA_App.Authentication;
 using OMA_App.Pages;
+using OMA_App.Storage;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace OMA_App
 {
     public partial class MainPage : ContentPage
     {
-
         private readonly OidcClient _client = default!;
         private string? _currentAccessToken;
         public IEnumerable<Island> Islands { get; set; } = [];
-
-        public MainPage(OidcClient client)
+        private readonly AuthenticationService _authService;
+        public MainPage(OidcClient client, AuthenticationService authService)
         {
             InitializeComponent();
             _client = client;
@@ -33,7 +34,7 @@ namespace OMA_App
             }
             Islands = list;
             _collectionView.ItemsSource = Islands;
-           
+            _authService = authService;
         }
 
         private async void OpenIsland(object sender, TappedEventArgs e)
@@ -49,32 +50,15 @@ namespace OMA_App
 
             if (result.IsError)
             {
-                //editor.Text = result.Error;
+                string test = result.Error;
                 return;
             }
 
-            _currentAccessToken = result.AccessToken;
+            await _authService.SignInAsync(result.AccessToken);
 
-            var sb = new StringBuilder(128);
 
-            sb.AppendLine("claims:");
-            foreach (var claim in result.User.Claims)
-            {
-                sb.AppendLine($"{claim.Type}: {claim.Value}");
-            }
+            
 
-            sb.AppendLine();
-            sb.AppendLine("access token:");
-            sb.AppendLine(result.AccessToken);
-
-            if (!string.IsNullOrWhiteSpace(result.RefreshToken))
-            {
-                sb.AppendLine();
-                sb.AppendLine("refresh token:");
-                sb.AppendLine(result.RefreshToken);
-            }
-
-            //editor.Text = sb.ToString();
         }
 
 

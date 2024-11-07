@@ -1,11 +1,13 @@
-﻿namespace OMA_App
+﻿using OMA_App.Authentication;
+
+namespace OMA_App
 {
     public partial class App : Application
     {
-        public App()
+        public App(AuthenticationService authService)
         {
             InitializeComponent();
-
+            authService.InitializeAsync();
             MainPage = new AppShell();
         }
     }
