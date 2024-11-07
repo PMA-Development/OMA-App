@@ -23,35 +23,19 @@ namespace OMA_App
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            var handler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true // Bypass SSL certificate errors for development
-            };
-
-            var httpClient = new HttpClient(handler)
-            {
-                Timeout = TimeSpan.FromMinutes(2) // Increase timeout to 2 minutes or adjust as needed
-            };
-
 
             builder.Services.AddSingleton(new OidcClient(new()
             {
-                Authority = "https://dlx83tgs-5000.euw.devtunnels.ms", // Your IdentityServer URL
-                ClientId = "OMA-Maui", // Your Client ID
-                Scope = "openid profile email api role", // Scopes needed
-                RedirectUri = "myapp://", // Custom URI scheme for your MAUI app
-                PostLogoutRedirectUri = "myapp://", // Custom URI for logout
+                Authority = "https://v8c0dbnw-5000.euw.devtunnels.ms",
+
+                ClientId = "OMA-Maui",
+                Scope = "openid profile role",
+                PostLogoutRedirectUri = "myapp://auth",
+                RedirectUri = "myapp://auth",
 
                 // Use the WebAuthenticatorBrowser for authentication
                 Browser = new WebAuthenticatorBrowser(),
 
-                HttpClientFactory = (options) =>
-                {
-                    var handler = new HttpsClientHandlerService();
-                    return new HttpClient(handler.GetPlatformMessageHandler());
-                },
-                // Backchannel handler for HTTPS requests
-                BackchannelHandler = handler
             }));
 
             // Continue initializing your .NET MAUI App here
