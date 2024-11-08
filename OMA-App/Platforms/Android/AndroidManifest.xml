@@ -7,8 +7,18 @@
         android:roundIcon="@mipmap/appicon_round"
         android:supportsRtl="true">
 
-
-		<!-- Other activities or configurations can be added here if necessary -->
+		<!-- Main Activity with custom URI scheme intent filter -->
+		<activity
+            android:name=".MainActivity"
+            android:exported="true">
+			<!-- Set android:exported explicitly -->
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="mauiapp" android:host="OMA-Apap" />
+			</intent-filter>
+		</activity>
 
 	</application>
 

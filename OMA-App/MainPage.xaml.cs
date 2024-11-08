@@ -44,7 +44,6 @@ namespace OMA_App
 
         private async void OnLoginClicked(object sender, EventArgs e)
         {
-            //editor.Text = "Login Clicked";
 
             var result = await _client.LoginAsync();
 
