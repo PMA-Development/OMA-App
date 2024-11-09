@@ -2,18 +2,21 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="OMA_App.MainPage">
-    <CollectionView x:Name="_collectionView" ItemsLayout="VerticalGrid, 2">
+             xmlns:vm="clr-namespace:OMA_App.ViewModels"
+             x:Class="OMA_App.Views.MainPage"
+             x:DataType="vm:MainPageViewModel">
+
+    <CollectionView x:Name="_collectionView" ItemsSource="{Binding Islands}" ItemsLayout="VerticalGrid, 2">
         <CollectionView.Header>
             <SearchBar Placeholder="Search items..." />
         </CollectionView.Header>
         <CollectionView.ItemTemplate>
-            <DataTemplate>
+            <DataTemplate x:DataType="vm:Island">
                 <Frame Margin="10" Padding="0" >
                     <Grid>
                         <StackLayout>
                             <StackLayout.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OpenIsland"/>
+                                <TapGestureRecognizer Command="{Binding BindingContext.OpenIslandCommand, Source={x:Reference _collectionView}}" CommandParameter="{Binding .}"/>
                             </StackLayout.GestureRecognizers>
                             <VerticalStackLayout Grid.Column="0" Grid.Row="0" VerticalOptions="Start">
                                 <Label Text="{Binding Title}" FontSize="Medium" FontAttributes="Bold" Padding="10, 5, 0, 5"/>
@@ -25,7 +28,7 @@
                                 <Label Background="LightGreen" Text="Task 2" FontSize="Medium" FontAttributes="Bold" Padding="20,0,0,10"/>
                                 <Label Background="LightGreen" Text="Task 3" FontSize="Medium" FontAttributes="Bold" Padding="20,0,0,10"/>
                             </VerticalStackLayout>
-                            <Button Text="Login" Clicked="OnLoginClicked" />
+                            <Button Text="Login" Command="{Binding BindingContext.LoginCommand, Source={x:Reference _collectionView}}" />
                         </StackLayout>
                     </Grid>
                 </Frame>

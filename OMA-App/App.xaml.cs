@@ -1,4 +1,7 @@
-﻿using OMA_App.Authentication;
+﻿using IdentityModel.OidcClient;
+using OMA_App.Authentication;
+using OMA_App.ViewModels;
+using OMA_App.Views;
 
 namespace OMA_App
 {

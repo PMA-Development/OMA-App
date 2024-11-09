@@ -3,6 +3,8 @@ using CommunityToolkit.Maui;
 using IdentityModel.OidcClient;
 using OMA_App.Authentication;
 using Microsoft.Extensions.Configuration;
+using OMA_App.Views;
+using OMA_App.ViewModels;
 namespace OMA_App
 {
     public static class MauiProgram
@@ -29,10 +31,17 @@ namespace OMA_App
                 PostLogoutRedirectUri = Constants.PostLogoutRedirectUri,
                 RedirectUri = Constants.RedirectUri,
                 Browser = new WebAuthenticatorBrowser()
-            })); 
+            }));
 
             // Continue initializing your .NET MAUI App here
+
+            builder.Services.AddSingleton<MainPageViewModel>();
+
+
             builder.Services.AddSingleton<MainPage>();
+
+            
+
             builder.Services.AddSingleton<AuthenticationService>();
 #if DEBUG
             builder.Logging.AddDebug();
