@@ -2,7 +2,6 @@
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using OMA_App.Authentication;
-using OMA_App.Pages;
 using OMA_App.Storage;
 using OMA_App.ViewModels;
 using System.Diagnostics;

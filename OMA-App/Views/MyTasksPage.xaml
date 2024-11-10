@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OMA_App.Pages.TasksPage"
-             Title="TasksPage">
-    <CollectionView x:Name="_collectionView">
+             xmlns:vm="clr-namespace:OMA_App.ViewModels"
+             xmlns:models="clr-namespace:OMA_App.Models"
+             x:Class="OMA_App.Views.MyTasksPage"
+             x:DataType="vm:MyTasksViewModel"
+             Title="MyTasksPage">
+
+    <CollectionView x:Name="_collectionView"
+                    ItemsSource="{Binding Tasks}">
         <CollectionView.Header>
-            <VerticalStackLayout>
-                <SearchBar Placeholder="Search items..." />
-            </VerticalStackLayout>
+            <SearchBar Placeholder="Search items..." />
         </CollectionView.Header>
         <CollectionView.ItemTemplate>
-            <DataTemplate>
+            <DataTemplate x:DataType="models:TaskObj">
                 <Frame Margin="10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width=".8*" />
                         </Grid.ColumnDefinitions>
-                                
-                            <VerticalStackLayout Grid.Column="1" Grid.Row="0" Padding="5" VerticalOptions="Center">
+
+                        <VerticalStackLayout Grid.Column="1" Grid.Row="0" Padding="5" VerticalOptions="Center">
                             <Label Text="{Binding Title}" FontSize="Medium" FontAttributes="Bold"/>
-                            <BoxView Color="Gray"
-                                 HeightRequest="2"
-                                 HorizontalOptions="Fill" />
+                            <BoxView Color="Gray" HeightRequest="2" HorizontalOptions="Fill" />
                             <Label Text="{Binding Type}" FontSize="Medium" FontAttributes="Bold"/>
                             <Label Text="{Binding Level}" FontSize="Medium" FontAttributes="Bold"/>
                             <Label Text="{Binding Description}" FontSize="Medium" FontAttributes="Bold"/>
                             <HorizontalStackLayout Spacing="20" Margin="0,20,0,0">
-                                <Button Text="Accept"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Start"/>    
-                                <Button Text="Eskalate"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="End" />
+                                <Button Text="View"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Start"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyTasksViewModel}}, Path=OnItemCommand}" />
+                                <Button Text="Escalate"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="End" />
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Grid>

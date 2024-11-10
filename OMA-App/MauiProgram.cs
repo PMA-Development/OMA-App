@@ -37,16 +37,20 @@ namespace OMA_App
             // Continue initializing your .NET MAUI App here
 
             builder.Services.AddSingleton<MainPageViewModel>();
-            builder.Services.AddSingleton<CreateTaskViewModel>();
-            builder.Services.AddSingleton<IslandPageViewModel>();
-
-
-
             builder.Services.AddSingleton<MainPage>();
+
+            builder.Services.AddSingleton<CreateTaskViewModel>();
             builder.Services.AddSingleton<CreateTaskPage>();
+
+            builder.Services.AddSingleton<IslandPageViewModel>();
             builder.Services.AddSingleton<IslandPage>();
 
-            
+            builder.Services.AddSingleton<MyTasksViewModel>();
+            builder.Services.AddSingleton<MyTasksPage>();
+
+            builder.Services.AddSingleton<TasksPageViewModel>();
+            builder.Services.AddSingleton<TasksPage>();
+
 
             builder.Services.AddSingleton<AuthenticationService>();
 #if DEBUG
