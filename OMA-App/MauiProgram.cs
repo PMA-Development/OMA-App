@@ -5,6 +5,7 @@ using OMA_App.Authentication;
 using Microsoft.Extensions.Configuration;
 using OMA_App.Views;
 using OMA_App.ViewModels;
+
 namespace OMA_App
 {
     public static class MauiProgram
@@ -36,9 +37,14 @@ namespace OMA_App
             // Continue initializing your .NET MAUI App here
 
             builder.Services.AddSingleton<MainPageViewModel>();
+            builder.Services.AddSingleton<CreateTaskViewModel>();
+            builder.Services.AddSingleton<IslandPageViewModel>();
+
 
 
             builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddSingleton<CreateTaskPage>();
+            builder.Services.AddSingleton<IslandPage>();
 
             
 

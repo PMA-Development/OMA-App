@@ -2,18 +2,20 @@
 using CommunityToolkit.Mvvm.Input;
 using IdentityModel.OidcClient;
 using OMA_App.Authentication;
+using OMA_App.Models;
+using OMA_App.Views;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace OMA_App.ViewModels
 {
-    public partial class MainPageViewModel : ObservableObject
+    public partial class MainPageViewModel : BaseViewModel
     {
         private readonly OidcClient _client;
         private readonly AuthenticationService _authService;
 
-        [ObservableProperty]
-        private ObservableCollection<Island> _islands;
+
+        public ObservableCollection<Island> Islands { get; set; }
 
         public MainPageViewModel(OidcClient client, AuthenticationService authService)
         {
@@ -55,15 +57,9 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task OpenIsland(Island island)
         {
-            // Navigate to IslandPage
+            await Shell.Current.GoToAsync(nameof(IslandPage));
         }
     }
 
-    public class Island
-    {
-        public int IslandID { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string Abbreviation { get; set; } = string.Empty;
-        public int TurbineID { get; set; }
-    }
+    
 }

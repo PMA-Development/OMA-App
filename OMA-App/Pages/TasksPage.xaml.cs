@@ -18,7 +18,7 @@ public partial class TasksPage : ContentPage
                 TaskID = i, 
                 Title = "Replacement sensor",
                 Type = "Type: Vedligeholdelse", 
-                Description = "Description: bla bla bla\nNordsø 1- A1", 
+                Description = "Description: bla bla bla\nNordsï¿½ 1- A1", 
                 Level = 1, 
                 TurbineID = i 
             };

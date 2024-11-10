@@ -12,6 +12,7 @@ namespace OMA_App
             InitializeComponent();
             authService.InitializeAsync();
             MainPage = new AppShell();
+
         }
     }
 }

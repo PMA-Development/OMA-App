@@ -14,13 +14,10 @@ namespace OMA_App.Views
     public partial class MainPage : ContentPage
     {
 
-        MainPageViewModel vm;
-
         public MainPage(MainPageViewModel vm)
         {
             InitializeComponent();
             BindingContext = vm;
-            this.vm = vm;
         }
 
     }

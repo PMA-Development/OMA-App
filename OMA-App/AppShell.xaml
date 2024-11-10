@@ -25,7 +25,7 @@
                 ContentTemplate="{DataTemplate pages:MyTasksPage}"
                 Route="MainPage" />
             <ShellContent Title="Create Task"
-            ContentTemplate="{DataTemplate pages:CreateTaskPage}"
+            ContentTemplate="{DataTemplate local:CreateTaskPage}"
             Route="MainPage" />
         </Tab>
         <Tab Title="Login" Icon="login.svg">

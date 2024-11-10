@@ -7,7 +7,7 @@ namespace OMA_App
         public AppShell()
         {
             InitializeComponent();
-
+            Routing.RegisterRoute(nameof(IslandPage), typeof(IslandPage));
         }
     }
 }

@@ -82,10 +82,10 @@
 	  <MauiXaml Update="Modals\MyTasksModal.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\CreateTaskPage.xaml">
+	  <MauiXaml Update="Views\CreateTaskPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\IslandPage.xaml">
+	  <MauiXaml Update="Views\IslandPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\MyTasksPage.xaml">

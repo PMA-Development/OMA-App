@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:vm="clr-namespace:OMA_App.ViewModels"
+             xmlns:models="clr-namespace:OMA_App.Models"
              x:Class="OMA_App.Views.MainPage"
              x:DataType="vm:MainPageViewModel">
 
@@ -11,7 +12,7 @@
             <SearchBar Placeholder="Search items..." />
         </CollectionView.Header>
         <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="vm:Island">
+            <DataTemplate x:DataType="models:Island">
                 <Frame Margin="10" Padding="0" >
                     <Grid>
                         <StackLayout>
