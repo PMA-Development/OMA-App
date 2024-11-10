@@ -1,7 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OMA_App.Modals;
 using OMA_App.Models;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace OMA_App.ViewModels
@@ -9,6 +13,8 @@ namespace OMA_App.ViewModels
     public partial class MyTasksViewModel : BaseViewModel
     {
         public ObservableCollection<TaskObj> Tasks { get; set; }
+
+
 
         public MyTasksViewModel()
         {
@@ -33,11 +39,10 @@ namespace OMA_App.ViewModels
             }
         }
 
-
         [RelayCommand]
-        private async Task OnItem()
+        private async Task Item(TaskObj task)
         {
-           
+            await Application.Current.MainPage.ShowPopupAsync(new MyTasksModal(task));
         }
     }
 }

@@ -7,7 +7,7 @@ namespace OMA_App.Views;
 
 public partial class TasksPage : ContentPage
 {
-
+    
     public TasksPage(TasksPageViewModel vm)
 	{
 		InitializeComponent();

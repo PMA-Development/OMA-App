@@ -19,7 +19,6 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width=".8*" />
                         </Grid.ColumnDefinitions>
-
                         <VerticalStackLayout Grid.Column="1" Grid.Row="0" Padding="5" VerticalOptions="Center">
                             <Label Text="{Binding Title}" FontSize="Medium" FontAttributes="Bold"/>
                             <BoxView Color="Gray" HeightRequest="2" HorizontalOptions="Fill" />
@@ -30,7 +29,8 @@
                                 <Button Text="View"
                                         VerticalOptions="Center"
                                         HorizontalOptions="Start"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyTasksViewModel}}, Path=OnItemCommand}" />
+                                        Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.ItemCommand}"
+                                        CommandParameter="{Binding .}" />
                                 <Button Text="Escalate"
                                         VerticalOptions="Center"
                                         HorizontalOptions="End" />

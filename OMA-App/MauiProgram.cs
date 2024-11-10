@@ -5,6 +5,8 @@ using OMA_App.Authentication;
 using Microsoft.Extensions.Configuration;
 using OMA_App.Views;
 using OMA_App.ViewModels;
+using OMA_App.Modals;
+using CommunityToolkit.Maui.Core;
 
 namespace OMA_App
 {
@@ -34,6 +36,8 @@ namespace OMA_App
                 Browser = new WebAuthenticatorBrowser()
             }));
 
+            builder.Services.AddTransient<MyTasksModal>();
+            
             // Continue initializing your .NET MAUI App here
 
             builder.Services.AddSingleton<MainPageViewModel>();
