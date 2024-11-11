@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:OMA_App.ViewModels"
              x:Class="OMA_App.Views.TasksPage"
-             xmlns:models="clr-namespace:OMA_App.Models"
+             xmlns:models="clr-namespace:OMA_App.API"
              x:DataType="vm:TasksPageViewModel"
              Title="TasksPage">
 
@@ -28,7 +28,7 @@
                                      HeightRequest="2"
                                      HorizontalOptions="Fill" />
                             <Label Text="{Binding Type}" FontSize="Medium" FontAttributes="Bold"/>
-                            <Label Text="{Binding Level}" FontSize="Medium" FontAttributes="Bold"/>
+                            <!--<Label Text="{Binding Level}" FontSize="Medium" FontAttributes="Bold"/>-->
                             <Label Text="{Binding Description}" FontSize="Medium" FontAttributes="Bold"/>
                             <HorizontalStackLayout Spacing="20" Margin="0,20,0,0">
                                 <Button Text="Accept"

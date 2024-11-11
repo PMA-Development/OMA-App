@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IdentityModel.OidcClient;
+using OMA_App.API;
 using OMA_App.Authentication;
-using OMA_App.Models;
 using OMA_App.Views;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -30,7 +30,6 @@ namespace OMA_App.ViewModels
                     IslandID = i,
                     Title = "Nordsø " + i,
                     Abbreviation = "NS" + i,
-                    TurbineID = i,
                 });
             }
         }

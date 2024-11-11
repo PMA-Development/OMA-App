@@ -10,7 +10,7 @@ namespace OMA_App
     {
         // OIDC Configuration
         public static readonly string Authority = "https://web2.pcsyd.dk";
-        //public static readonly string Authority = "https://v8c0dbnw-5000.euw.devtunnels.ms";
+        public static readonly string APIURI = "https://web3.pcsyd.dk";
         public static readonly string ClientId = "OMA-Maui";
         public static readonly string Scope = "openid profile role";
         public static readonly string PostLogoutRedirectUri = "myapp://auth";

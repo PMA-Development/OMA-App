@@ -1,12 +1,13 @@
 using CommunityToolkit.Maui.Views;
+using OMA_App.API;
 using OMA_App.Models;
 
 namespace OMA_App.Modals;
 
 public partial class MyTasksModal : Popup
 {
-    public TaskObj Task { get; private set; }
-    public MyTasksModal(TaskObj task)
+    public API.TaskObj Task { get; private set; }
+    public MyTasksModal(API.TaskObj task)
 	{
 		InitializeComponent();
         Task = task;

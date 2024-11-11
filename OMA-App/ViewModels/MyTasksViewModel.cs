@@ -2,8 +2,8 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OMA_App.API;
 using OMA_App.Modals;
-using OMA_App.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -32,8 +32,6 @@ namespace OMA_App.ViewModels
                     Title = "Replacement sensor",
                     Type = "Type: Vedligeholdelse",
                     Description = "Description: bla bla bla\nNordsø 1- A1",
-                    Level = 1,
-                    TurbineID = i
                 };
                 Tasks.Add(task);
             }

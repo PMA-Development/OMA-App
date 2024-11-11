@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OMA_App.Models
 {
-    public class TaskObj
+    public class TaskObjTEST
     {
         public int TaskID { get; set; }
         public string Type { get; set; } = string.Empty;

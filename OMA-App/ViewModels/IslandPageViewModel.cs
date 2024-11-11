@@ -2,8 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OMA_App.API;
 using OMA_App.Models;
 
 namespace OMA_App.ViewModels
@@ -12,27 +14,26 @@ namespace OMA_App.ViewModels
     {
         public ObservableCollection<Turbine> Turbines { get; set; }
 
+        private OMAClient _client;
+
         [ObservableProperty]
         private string searchText;
 
-        public IslandPageViewModel()
+        public IslandPageViewModel(OMAClient client)
         {
-            Turbines = new ObservableCollection<Turbine>(GenerateTurbines());
+            _client = client;
+            GetTurbines();
         }
 
-        private IEnumerable<Turbine> GenerateTurbines()
+        private async void GetTurbines()
         {
-            return Enumerable.Range(1, 10).Select(i => new Turbine
-            {
-                TurbineID = i,
-                Title = "A" + i,
-                TelemetryID = i
-            });
+           var tempList =  await _client.GetTurbinesAsync();
+            Turbines = tempList.ToObservableCollection();
         }
 
 
         [RelayCommand]
-        private async Task Return()
+        private async System.Threading.Tasks.Task Return()
         {
             await Shell.Current.GoToAsync("..");
         }
@@ -51,18 +52,18 @@ namespace OMA_App.ViewModels
 
         private void PerformSearch()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-            {
-                Turbines = new ObservableCollection<Turbine>(GenerateTurbines());
-            }
-            else
-            {
-                var filteredTurbines = GenerateTurbines()
-                    .Where(t => t.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+            //if (string.IsNullOrWhiteSpace(SearchText))
+            //{
+            //    Turbines = new ObservableCollection<Turbine>(GenerateTurbines());
+            //}
+            //else
+            //{
+            //    var filteredTurbines = GenerateTurbines()
+            //        .Where(t => t.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+            //        .ToList();
 
-                Turbines = new ObservableCollection<Turbine>(filteredTurbines);
-            }
+            //    Turbines = new ObservableCollection<Turbine>(filteredTurbines);
+            //}
         }
 
        

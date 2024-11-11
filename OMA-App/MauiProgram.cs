@@ -7,6 +7,7 @@ using OMA_App.Views;
 using OMA_App.ViewModels;
 using OMA_App.Modals;
 using CommunityToolkit.Maui.Core;
+using OMA_App.API;
 
 namespace OMA_App
 {
@@ -36,6 +37,8 @@ namespace OMA_App
                 Browser = new WebAuthenticatorBrowser()
             }));
 
+
+            builder.Services.AddScoped(sp => new OMAClient(Constants.APIURI, new HttpClient()));
             builder.Services.AddTransient<MyTasksModal>();
             
             // Continue initializing your .NET MAUI App here

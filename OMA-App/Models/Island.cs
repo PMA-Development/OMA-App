@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OMA_App.Models
 {
-    public class Island
+    public class IslandTEST
     {
         public int IslandID { get; set; }
         public string Title { get; set; } = string.Empty;
