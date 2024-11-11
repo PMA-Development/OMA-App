@@ -1,30 +1,32 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Maui.Core.Extensions;
 using OMA_App.API;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OMA_App.ViewModels
 {
     public partial class CreateTaskViewModel : BaseViewModel
     {
-        OMAClient _client;
+        private readonly OMAClient _client;
 
-        public TaskDTO Task { get; set; } = new();
 
-        public ObservableCollection<Turbine> Turbines { get; set; } = new();
-        public ObservableCollection<User> Users { get; set; } = new();
+        private TaskDTO task = new();
 
+
+        private ObservableCollection<User> Users = new();
+
+        private ObservableCollection<Turbine> Turbines = new();
+
+        [ObservableProperty]
+        private User selectedUser;
 
         public CreateTaskViewModel(OMAClient client)
         {
             _client = client;
+            GetUsers();
             GetTurbines();
-
         }
 
         private async void GetUsers()
@@ -32,16 +34,23 @@ namespace OMA_App.ViewModels
             var tempList = await _client.GetUsersAsync();
             Users = tempList.ToObservableCollection();
         }
+
         private async void GetTurbines()
         {
             var tempList = await _client.GetTurbinesAsync();
             Turbines = tempList.ToObservableCollection();
         }
 
+        partial void OnSelectedUserChanged(User value)
+        {
+            // Update Task.UserId whenever SelectedUser changes
+            task.User.UserID = value.UserID;
+        }
+
         [RelayCommand]
         private async Task CreateTask()
         {
-            await _client.AddTaskAsync(Task);
+            await _client.AddTaskAsync(task);
         }
     }
 }
