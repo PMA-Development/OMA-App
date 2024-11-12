@@ -7,7 +7,7 @@ namespace OMA_App.Modals;
 public partial class MyTasksModal : Popup
 {
     public API.TaskObj Task { get; private set; }
-    public MyTasksModal(API.TaskObj task)
+    public MyTasksModal(TaskObj task)
 	{
 		InitializeComponent();
         Task = task;

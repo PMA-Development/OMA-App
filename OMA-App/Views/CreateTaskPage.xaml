@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OMA_App.Views.CreateTaskPage"
-             Title="Create Task Page"
-             xmlns:models="clr-namespace:OMA_App.API"
-             xmlns:vm="clr-namespace:OMA_App.ViewModels">
+<ContentPage
+    x:Class="OMA_App.Views.CreateTaskPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:OMA_App.API"
+    xmlns:vm="clr-namespace:OMA_App.ViewModels"
+    Title="Create Task Page">
 
 
 
     <VerticalStackLayout Padding="10">
         <Label Text="Title:" />
-        <Entry Text="{Binding Task.Title}" Placeholder="Enter title" />
+        <Entry Placeholder="Enter title" Text="{Binding Task.Title}" />
 
         <Label Text="Type:" />
-        <Entry Text="{Binding Task.Type}" Placeholder="Enter type" />
+        <Entry Placeholder="Enter type" Text="{Binding Task.Type}" />
 
         <Label Text="Description:" />
-        <Editor Text="{Binding Task.Description}" Placeholder="Enter description" HeightRequest="150" />
+        <Editor
+            HeightRequest="150"
+            Placeholder="Enter description"
+            Text="{Binding Task.Description}" />
         <Label Text="User" />
-        
-        <Picker x:DataType="vm:CreateTaskViewModel" ItemsSource="{Binding Users}" SelectedItem="{Binding Task.User}" ItemDisplayBinding="{Binding Name}" />
+        <Picker
+            Title="Select User"
+            ItemDisplayBinding="{Binding Name}"
+            ItemsSource="{Binding Users}"
+            SelectedItem="{Binding SelectedUser}" />
 
-        <Button HorizontalOptions="Center" Margin="0,20" WidthRequest="150" Command="{Binding CreateTaskCommand}" Text="Create" />
+
+        <Button
+            Margin="0,20"
+            Command="{Binding CreateTaskCommand}"
+            HorizontalOptions="Center"
+            Text="Create"
+            WidthRequest="150" />
     </VerticalStackLayout>
 </ContentPage>
