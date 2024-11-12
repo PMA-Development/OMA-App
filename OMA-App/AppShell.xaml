@@ -29,7 +29,7 @@
         </Tab>
         <Tab Title="Login" Icon="login.svg">
             <ShellContent
-                 ContentTemplate="{DataTemplate local:MainPage}"
+                 ContentTemplate="{DataTemplate local:AccountPage}"
                  Route="MainPage" />
         </Tab>
     </TabBar>

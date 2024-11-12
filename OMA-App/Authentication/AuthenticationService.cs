@@ -1,4 +1,5 @@
-﻿using OMA_App.Storage;
+﻿using IdentityModel.OidcClient;
+using OMA_App.Storage;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -36,16 +37,16 @@ namespace OMA_App.Authentication
                 .ToList();
         }
 
-        public async Task SignInAsync(string token)
+        public async Task SignInAsync(LoginResult token)
         {
-            await TokenService.SaveAccessTokenAsync(token);
-            LoadRolesFromToken(token);
+            await TokenService.SaveTokensAsync(token);
+            LoadRolesFromToken(token.AccessToken);
         }
 
         public void SignOut()
         {
             _roles.Clear();
-            TokenService.ClearAccessToken();
+            TokenService.ClearTokens();
         }
     }
 }

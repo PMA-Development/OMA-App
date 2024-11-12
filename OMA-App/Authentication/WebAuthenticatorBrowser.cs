@@ -19,7 +19,7 @@ namespace OMA_App.Authentication
                     new Uri(options.StartUrl),
                     new Uri(options.EndUrl));
 
-                var url = new RequestUrl("myapp://callback")
+                var url = new RequestUrl("myapp://auth")
                     .Create(new Parameters(result.Properties));
 
                 return new BrowserResult

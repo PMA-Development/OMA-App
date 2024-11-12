@@ -40,7 +40,7 @@ namespace OMA_App
 
             builder.Services.AddScoped(sp => new OMAClient(Constants.APIURI, new HttpClient()));
             builder.Services.AddTransient<MyTasksModal>();
-            
+
             // Continue initializing your .NET MAUI App here
 
             builder.Services.AddSingleton<MainPageViewModel>();
@@ -58,6 +58,8 @@ namespace OMA_App
             builder.Services.AddSingleton<TasksPageViewModel>();
             builder.Services.AddSingleton<TasksPage>();
 
+            builder.Services.AddTransient<AccountPageViewModel>();
+            builder.Services.AddTransient<AccountPage>();
 
             builder.Services.AddSingleton<AuthenticationService>();
 #if DEBUG

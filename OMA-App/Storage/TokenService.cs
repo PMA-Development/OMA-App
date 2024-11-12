@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdentityModel.OidcClient;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -11,18 +12,24 @@ namespace OMA_App.Storage
     {
         private const string AccessTokenKey = "access_token";
         private const string UserIdKey = "UserId";
+        private const string IdentityToken = "IdentityToken";
 
-        public static async Task SaveAccessTokenAsync(string token)
+        public static async Task SaveTokensAsync(LoginResult token)
         {
             var handler = new JwtSecurityTokenHandler();
 
-            var test = handler.ReadJwtToken(token);
-            var s = test.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            var JwtToken = handler.ReadJwtToken(token.AccessToken);
+            var _ = JwtToken.Claims.FirstOrDefault(c => c.Type == "sub").Value;
 
-            await SecureStorage.SetAsync(AccessTokenKey, token);
-            await SecureStorage.SetAsync(UserIdKey,  s);
+            await SecureStorage.SetAsync(AccessTokenKey, token.AccessToken);
+            await SecureStorage.SetAsync(UserIdKey, _);
+            await SecureStorage.SetAsync(IdentityToken, token.IdentityToken);
         }
 
+        public static async Task<string> GetIdentityTokenAsync()
+        {
+            return await SecureStorage.GetAsync(IdentityToken);
+        }
         public static async Task<string> GetAccessTokenAsync()
         {
             return await SecureStorage.GetAsync(AccessTokenKey);
@@ -33,9 +40,13 @@ namespace OMA_App.Storage
             return await SecureStorage.GetAsync(UserIdKey);
         }
 
-        public static void ClearAccessToken()
+
+
+        public static void ClearTokens()
         {
             SecureStorage.Remove(AccessTokenKey);
+            SecureStorage.Remove(UserIdKey);
+            SecureStorage.Remove(IdentityToken);
         }
     }
 }

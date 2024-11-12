@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.Browser;
 using OMA_App.API;
 using OMA_App.Authentication;
+using OMA_App.Storage;
 using OMA_App.Views;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -50,7 +52,23 @@ namespace OMA_App.ViewModels
                 return;
             }
 
-            await _authService.SignInAsync(result.AccessToken);
+            await _authService.SignInAsync(result);
+        }
+
+        [RelayCommand]
+        private async Task Logout()
+        {
+            var id = await TokenService.GetIdentityTokenAsync();
+            var result = await _client.LogoutAsync(new LogoutRequest { IdTokenHint = id});
+
+            if (result.IsError)
+            {
+                // Handle error
+                return;
+            }
+
+            _authService.SignOut();
+
         }
 
         [RelayCommand]
