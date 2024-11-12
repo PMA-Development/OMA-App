@@ -24,8 +24,6 @@
                            Text="{Binding SearchText}" />
             </VerticalStackLayout>
         </CollectionView.Header>
-
-        <!-- Set DataType for the ItemTemplate -->
         <CollectionView.ItemTemplate>
             <DataTemplate x:DataType="models:Turbine">
                 <Frame Margin="10" Padding="0">

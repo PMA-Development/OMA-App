@@ -18,7 +18,8 @@
         <Label Text="Description:" />
         <Editor Text="{Binding Task.Description}" Placeholder="Enter description" HeightRequest="150" />
         <Label Text="User" />
-        <Picker x:DataType="vm:CreateTaskViewModel" x:DataType="models:UserDTO" ItemsSource="{Binding Users}" SelectedItem="{Binding Task.User}" ItemDisplayBinding="{Binding Name}" />
+        
+        <Picker x:DataType="vm:CreateTaskViewModel" ItemsSource="{Binding Users}" SelectedItem="{Binding Task.User}" ItemDisplayBinding="{Binding Name}" />
 
         <Button HorizontalOptions="Center" Margin="0,20" WidthRequest="150" Command="{Binding CreateTaskCommand}" Text="Create" />
     </VerticalStackLayout>
