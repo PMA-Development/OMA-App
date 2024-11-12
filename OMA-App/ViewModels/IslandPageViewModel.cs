@@ -12,7 +12,7 @@ namespace OMA_App.ViewModels
 {
     public partial class IslandPageViewModel : BaseViewModel
     {
-        public ObservableCollection<Turbine> Turbines { get; set; }
+        public ObservableCollection<TurbineDTO> Turbines { get; set; }
 
         private OMAClient _client;
 

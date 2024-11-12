@@ -12,7 +12,7 @@
             <SearchBar Placeholder="Search items..." />
         </CollectionView.Header>
         <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models:Island">
+            <DataTemplate x:DataType="models:IslandDTO">
                 <Frame Margin="10" Padding="0" >
                     <Grid>
                         <StackLayout>

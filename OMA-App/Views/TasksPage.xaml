@@ -15,7 +15,7 @@
             </VerticalStackLayout>
         </CollectionView.Header>
         <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models:TaskObj">
+            <DataTemplate x:DataType="models:TaskDTO">
                 <Frame Margin="10">
                     <Grid>
                         <Grid.ColumnDefinitions>

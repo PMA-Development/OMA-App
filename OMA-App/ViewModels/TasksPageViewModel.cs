@@ -11,11 +11,11 @@ namespace OMA_App.ViewModels
 {
     public class TasksPageViewModel
     {
-        public ObservableCollection<TaskObj> Tasks { get; set; }
+        public ObservableCollection<TaskDTO> Tasks { get; set; }
 
         public TasksPageViewModel()
         {
-            Tasks = new ObservableCollection<TaskObj>();
+            Tasks = new ObservableCollection<TaskDTO>();
             LoadTasks();
         }
 
@@ -23,7 +23,7 @@ namespace OMA_App.ViewModels
         {
             for (int i = 0; i < 20; i++)
             {
-                TaskObj task = new TaskObj
+                TaskDTO task = new TaskDTO
                 {
                     TaskID = i,
                     Title = "Replacement sensor",

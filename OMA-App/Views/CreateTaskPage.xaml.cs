@@ -10,6 +10,15 @@ public partial class CreateTaskPage : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = vm;
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(100); // Small delay to ensure the ViewModel completes loading
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                BindingContext = vm;
+            });
+        });
     }
 
 }

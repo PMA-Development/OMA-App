@@ -12,13 +12,13 @@ namespace OMA_App.ViewModels
 {
     public partial class MyTasksViewModel : BaseViewModel
     {
-        public ObservableCollection<TaskObj> Tasks { get; set; }
+        public ObservableCollection<TaskDTO> Tasks { get; set; }
 
 
 
         public MyTasksViewModel()
         {
-            Tasks = new ObservableCollection<TaskObj>();
+            Tasks = new ObservableCollection<TaskDTO>();
             LoadTasks();
         }
 
@@ -26,7 +26,7 @@ namespace OMA_App.ViewModels
         {
             for (int i = 0; i < 10; i++)
             {
-                TaskObj task = new TaskObj
+                TaskDTO task = new TaskDTO
                 {
                     TaskID = i,
                     Title = "Replacement sensor",
@@ -38,7 +38,7 @@ namespace OMA_App.ViewModels
         }
 
         [RelayCommand]
-        private async Task Item(TaskObj task)
+        private async Task Item(TaskDTO task)
         {
             await Application.Current.MainPage.ShowPopupAsync(new MyTasksModal(task));
         }

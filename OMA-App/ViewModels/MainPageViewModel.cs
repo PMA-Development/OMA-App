@@ -17,17 +17,17 @@ namespace OMA_App.ViewModels
         private readonly AuthenticationService _authService;
 
 
-        public ObservableCollection<Island> Islands { get; set; }
+        public ObservableCollection<IslandDTO> Islands { get; set; }
 
         public MainPageViewModel(OidcClient client, AuthenticationService authService)
         {
             _client = client;
             _authService = authService;
 
-            Islands = new ObservableCollection<Island>();
+            Islands = new ObservableCollection<IslandDTO>();
             for (int i = 1; i < 9; i++)
             {
-                Islands.Add(new Island
+                Islands.Add(new IslandDTO
                 {
                     IslandID = i,
                     Title = "Nordsø " + i,
@@ -72,7 +72,7 @@ namespace OMA_App.ViewModels
         }
 
         [RelayCommand]
-        private async Task OpenIsland(Island island)
+        private async Task OpenIsland(IslandDTO island)
         {
             await Shell.Current.GoToAsync(nameof(IslandPage));
         }

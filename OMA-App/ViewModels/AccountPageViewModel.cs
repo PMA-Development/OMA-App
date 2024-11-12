@@ -1,11 +1,11 @@
 ﻿using IdentityModel.OidcClient;
 using OMA_App.Authentication;
 using OMA_App.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using IdentityModel.Client;
+using CommunityToolkit.Mvvm.Messaging;
+using OMA_App.MessageClass;
+using OMA_App.Views;
 
 namespace OMA_App.ViewModels
 {
@@ -18,56 +18,66 @@ namespace OMA_App.ViewModels
         {
             _authService = authenticationService;
             _client = client;
-
-            CheckLogin();
-
-        }
-        public AccountPageViewModel()
-        {
-
+            _ = CheckLoginAsync();
         }
 
-        public async Task CheckLogin()
+
+
+        public async Task CheckLoginAsync()
         {
-            if (TokenService.GetAccessTokenAsync() == null)
+            var accessToken = await TokenService.GetAccessTokenAsync();
+            if (string.IsNullOrEmpty(accessToken))
             {
-                await Login();
+                await LoginAsync();
             }
             else
             {
-                await Logout();
+                await LogoutAsync();
             }
 
             
         }
 
-        private async Task Login()
+      
+        private async Task LoginAsync()
         {
             var result = await _client.LoginAsync();
-            
+
             if (result.IsError)
             {
-                // Handle error
+                Console.WriteLine($"Login error: {result.Error}");
                 return;
             }
 
+            
             await _authService.SignInAsync(result);
+            NotifyLoginStateChanged(true);
+
         }
 
-        private async Task Logout()
+
+        private async Task LogoutAsync()
         {
-            var result = await _client.LogoutAsync(new LogoutRequest { IdTokenHint = await TokenService.GetIdentityTokenAsync()});
+            var idToken = await TokenService.GetIdentityTokenAsync();
+            var logoutRequest = new LogoutRequest { IdTokenHint = idToken };
+
+            var result = await _client.LogoutAsync(logoutRequest);
 
             if (result.IsError)
             {
-                // Handle error
+                Console.WriteLine($"Logout error: {result.Error}");
                 return;
             }
 
             _authService.SignOut();
+            NotifyLoginStateChanged(false);
 
         }
 
-
+        private void NotifyLoginStateChanged(bool isLoggedIn)
+        {
+            
+            WeakReferenceMessenger.Default.Send(new LoginStateChangedMessage(isLoggedIn));
+        }
     }
 }
