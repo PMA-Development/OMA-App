@@ -4,6 +4,7 @@ using CommunityToolkit.Maui.Core.Extensions;
 using OMA_App.API;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using OMA_App.Storage;
 
 namespace OMA_App.ViewModels
 {
@@ -50,6 +51,8 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task CreateTask()
         {
+            //TODO: Change Task Object
+            //task.Owner.UserID = await TokenService.GetUserIdAsync();
             await _client.AddTaskAsync(task);
         }
     }
