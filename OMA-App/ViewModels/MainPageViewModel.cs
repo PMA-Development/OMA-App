@@ -13,63 +13,27 @@ namespace OMA_App.ViewModels
 {
     public partial class MainPageViewModel : BaseViewModel
     {
-        private readonly OidcClient _client;
-        private readonly AuthenticationService _authService;
+        private readonly OMAClient _client;
 
 
-        public ObservableCollection<IslandDTO> Islands { get; set; }
+        public ObservableCollection<IslandDTO> Islands { get; set; } = new();
 
-        public MainPageViewModel(OidcClient client, AuthenticationService authService)
+        public MainPageViewModel(OMAClient client)
         {
             _client = client;
-            _authService = authService;
 
-            Islands = new ObservableCollection<IslandDTO>();
-            for (int i = 1; i < 9; i++)
+        }
+
+        public async Task LoadIslands()
+        {
+            var tempList = await _client.GetIslandsAsync();
+            Islands.Clear();
+            foreach (var item in tempList)
             {
-                Islands.Add(new IslandDTO
-                {
-                    IslandID = i,
-                    Title = "Nordsø " + i,
-                    Abbreviation = "NS" + i,
-                });
+                Islands.Add(item);
             }
         }
 
-        public MainPageViewModel()
-        {
-            
-        }
-
-        [RelayCommand]
-        private async Task Login()
-        {
-            var result = await _client.LoginAsync();
-
-            if (result.IsError)
-            {
-                // Handle error
-                return;
-            }
-
-            await _authService.SignInAsync(result);
-        }
-
-        [RelayCommand]
-        private async Task Logout()
-        {
-            var id = await TokenService.GetIdentityTokenAsync();
-            var result = await _client.LogoutAsync(new LogoutRequest { IdTokenHint = id});
-
-            if (result.IsError)
-            {
-                // Handle error
-                return;
-            }
-
-            _authService.SignOut();
-
-        }
 
         [RelayCommand]
         private async Task OpenIsland(IslandDTO island)
@@ -78,5 +42,5 @@ namespace OMA_App.ViewModels
         }
     }
 
-    
+
 }

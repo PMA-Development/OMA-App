@@ -39,11 +39,16 @@ namespace OMA_App.ViewModels
         public CreateTaskViewModel(OMAClient client)
         {
             _client = client;
-            GetUsers();
-            GetIslands();
+
         }
 
-        private async void GetUsers()
+        public async Task GetProperties()
+        {
+            await GetUsers();
+            await GetIslands();
+        }
+
+        private async Task GetUsers()
         {
             var tempList = await _client.GetUsersAsync();
             foreach (var user in tempList)
@@ -52,12 +57,12 @@ namespace OMA_App.ViewModels
             }
         }
 
-        private async void GetIslands()
+        private async Task GetIslands()
         {
             var tempList = await _client.GetIslandsAsync();
             foreach (var island in tempList)
             {
-                Islands.Add(island); 
+                Islands.Add(island);
             }
 
         }
@@ -70,7 +75,7 @@ namespace OMA_App.ViewModels
             FilteredTurbines.Clear();
             foreach (var turbine in turbinesForIsland)
             {
-                FilteredTurbines.Add(turbine); 
+                FilteredTurbines.Add(turbine);
             }
         }
 
@@ -111,7 +116,7 @@ namespace OMA_App.ViewModels
             Task.FinishDescription = "";
             Task.OwnerID = Guid.Parse(await TokenService.GetUserIdAsync());
             await _client.AddTaskAsync(Task);
-            await Application.Current.MainPage.DisplayAlert("Confirm","Task has been created", "ok");
+            await Application.Current.MainPage.DisplayAlert("Confirm", "Task has been created", "ok");
             ResetFields();
 
 

@@ -21,7 +21,6 @@ namespace OMA_App.ViewModels
         public MyTasksViewModel(OMAClient client)
         {
        ;    _client = client;
-            LoadTasks();
         }
 
         public async Task LoadTasks()
