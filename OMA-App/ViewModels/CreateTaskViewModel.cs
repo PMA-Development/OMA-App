@@ -50,38 +50,72 @@ namespace OMA_App.ViewModels
 
         private async Task GetUsers()
         {
-            var tempList = await _client.GetUsersAsync();
-            foreach (var user in tempList)
+            try
             {
-                Users.Add(user);
+                var tempList = await _client.GetUsersAsync();
+                Users.Clear();
+                foreach (var user in tempList)
+                {
+                    Users.Add(user);
+                }
+            }
+            catch (ApiException apiEx)
+            {
+                await ShowErrorAlert(apiEx);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
             }
         }
 
         private async Task GetIslands()
         {
-            var tempList = await _client.GetIslandsAsync();
-            foreach (var island in tempList)
+            try
             {
-                Islands.Add(island);
+                var tempList = await _client.GetIslandsAsync();
+                Islands.Clear();
+                foreach (var island in tempList)
+                {
+                    Islands.Add(island);
+                }
             }
-
+            catch (ApiException apiEx)
+            {
+                await ShowErrorAlert(apiEx);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
+            }
         }
 
         private async void LoadTurbinesForIsland()
         {
             if (SelectedIsland == null) return;
 
-            var turbinesForIsland = await _client.GetTurbinesIslandAsync(SelectedIsland.IslandID);
-            FilteredTurbines.Clear();
-            foreach (var turbine in turbinesForIsland)
+            try
             {
-                FilteredTurbines.Add(turbine);
+                var turbinesForIsland = await _client.GetTurbinesIslandAsync(SelectedIsland.IslandID);
+                FilteredTurbines.Clear();
+                foreach (var turbine in turbinesForIsland)
+                {
+                    FilteredTurbines.Add(turbine);
+                }
+            }
+            catch (ApiException apiEx)
+            {
+                await ShowErrorAlert(apiEx);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
             }
         }
 
+
         partial void OnSelectedIslandChanged(IslandDTO value)
         {
-            // Load turbines for the selected island whenever the island changes
             LoadTurbinesForIsland();
         }
 
@@ -112,14 +146,55 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task CreateTask()
         {
-            Task.Level = LevelEnum._1;
-            Task.FinishDescription = "";
-            Task.OwnerID = Guid.Parse(await TokenService.GetUserIdAsync());
-            await _client.AddTaskAsync(Task);
-            await Application.Current.MainPage.DisplayAlert("Confirm", "Task has been created", "ok");
-            ResetFields();
+            try
+            {
+                Task.Level = LevelEnum._1;
+                Task.FinishDescription = "";
+                Task.OwnerID = Guid.Parse(await TokenService.GetUserIdAsync());
+
+                int result = await _client.AddTaskAsync(Task);
+
+       
+                await DisplayAlertAsync("Success", "Task has been created successfully");
 
 
+                ResetFields();
+            }
+            catch (ApiException apiEx)
+            {
+
+                await ShowErrorAlert(apiEx);
+            }
+            catch (Exception ex) when (ex is FormatException || ex is ArgumentNullException)
+            {
+
+                await DisplayAlertAsync("Error", "Invalid input or data missing. Please review your information.");
+            }
+            catch (Exception ex)
+            {
+
+                await DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
+            }
         }
+
+
+        private async Task ShowErrorAlert(ApiException apiEx)
+        {
+            string message = apiEx.StatusCode switch
+            {
+                400 => "Invalid input. Please check your data.",
+                401 => "You are not authorized to perform this action.",
+                500 => "An error occurred on the server. Please try again later.",
+                _ => $"Unexpected error: {apiEx.Message}",
+            };
+            await DisplayAlertAsync("Error", message);
+        }
+
+
+        private async Task DisplayAlertAsync(string title, string message)
+        {
+            await Application.Current.MainPage.DisplayAlert(title, message, "OK");
+        }
+
     }
 }

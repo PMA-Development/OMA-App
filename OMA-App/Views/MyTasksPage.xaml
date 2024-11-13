@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:OMA_App.ViewModels"
-             xmlns:models="clr-namespace:OMA_App.API"
-             x:Class="OMA_App.Views.MyTasksPage"
-             x:DataType="vm:MyTasksViewModel"
-             Title="MyTasksPage">
+<ContentPage
+    x:Class="OMA_App.Views.MyTasksPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converter="clr-namespace:OMA_App.Converters"
+    xmlns:models="clr-namespace:OMA_App.API"
+    xmlns:vm="clr-namespace:OMA_App.ViewModels"
+    Title="MyTasksPage"
+    x:DataType="vm:MyTasksViewModel">
 
-    <CollectionView x:Name="_collectionView"
-                    ItemsSource="{Binding Tasks}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:LevelEnumToStringConverter x:Key="LevelEnumToStringConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <CollectionView x:Name="_collectionView" ItemsSource="{Binding Tasks}">
         <CollectionView.Header>
             <SearchBar Placeholder="Search items..." />
         </CollectionView.Header>
@@ -19,20 +27,44 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width=".8*" />
                         </Grid.ColumnDefinitions>
-                        <VerticalStackLayout Grid.Column="1" Grid.Row="0" Padding="5" VerticalOptions="Center">
-                            <Label Text="{Binding Title}" FontSize="Medium" FontAttributes="Bold"/>
-                            <BoxView Color="Gray" HeightRequest="2" HorizontalOptions="Fill" />
-                            <Label Text="{Binding Type}" FontSize="Medium" FontAttributes="Bold"/>
-                            <Label Text="{Binding Description}" FontSize="Medium" FontAttributes="Bold"/>
-                            <HorizontalStackLayout Spacing="20" Margin="0,20,0,0">
-                                <Button Text="View"
-                                        VerticalOptions="Center"
-                                        HorizontalOptions="Start"
-                                        Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.ItemCommand}"
-                                        CommandParameter="{Binding .}" />
-                                <Button Text="Escalate"
-                                        VerticalOptions="Center"
-                                        HorizontalOptions="End" />
+                        <VerticalStackLayout
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Padding="5"
+                            VerticalOptions="Center">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                Text="{Binding Title}" />
+                            <BoxView
+                                HeightRequest="2"
+                                HorizontalOptions="Fill"
+                                Color="Gray" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                Text="{Binding Type}" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                Text="{Binding Description}" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                Text="{Binding Level, Converter={StaticResource LevelEnumToStringConverter}}" />
+                            <HorizontalStackLayout Margin="0,20,0,0" Spacing="20">
+                                <Button
+                                    Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.ViewTaskCommand}"
+                                    CommandParameter="{Binding .}"
+                                    HorizontalOptions="Start"
+                                    Text="View"
+                                    VerticalOptions="Center" />
+                                <Button
+                                    Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.EscalateTaskCommand}"
+                                    CommandParameter="{Binding .}"
+                                    HorizontalOptions="End"
+                                    Text="Escalate"
+                                    VerticalOptions="Center" />
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Grid>
