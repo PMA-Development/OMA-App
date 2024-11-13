@@ -44,8 +44,8 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task EscalateTask(TaskDTO task)
         {
-          string action = await Application.Current.MainPage.DisplayActionSheet("Escalate to?","Cancel",null,"Level 1","Level 2","Level 3");
-
+             string action = await Application.Current.MainPage.DisplayActionSheet("Escalate to?","Cancel",null,"Level 1","Level 2","Level 3");
+            int index = Tasks.IndexOf(task);
             switch (action)
             {
                 case "Level 1":
@@ -60,10 +60,13 @@ namespace OMA_App.ViewModels
                 default:
                     return;
             }
-
+            
             await _client.UpdateTaskAsync(task);
 
-            string test = "AHHH";
+            if (index >= 0)
+                Tasks[index] = task;
+            
+           
         }
     }
 }
