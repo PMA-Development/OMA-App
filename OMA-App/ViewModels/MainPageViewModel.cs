@@ -38,8 +38,12 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task OpenIsland(IslandDTO island)
         {
-            await Shell.Current.GoToAsync(nameof(IslandPage));
+            // Convert IslandId to string for query parameter
+            var route = $"{nameof(IslandPage)}?IslandId={island.IslandID.ToString()}";
+            await Shell.Current.GoToAsync(route);
         }
+
+
     }
 
 
