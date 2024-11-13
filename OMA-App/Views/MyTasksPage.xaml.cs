@@ -8,13 +8,21 @@ namespace OMA_App.Views;
 
 public partial class MyTasksPage : ContentPage
 {
-
+    MyTasksViewModel _vm;
 
     public MyTasksPage(MyTasksViewModel vm)
 	{
 		InitializeComponent();
         BindingContext = vm;
+        _vm = vm;
     }
 
-    
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _vm.LoadTasks();
+    }
+
+
+
 }

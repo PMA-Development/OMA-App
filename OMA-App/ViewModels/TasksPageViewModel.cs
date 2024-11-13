@@ -1,4 +1,5 @@
-﻿using OMA_App.API;
+﻿using CommunityToolkit.Mvvm.Input;
+using OMA_App.API;
 using OMA_App.Models;
 using System;
 using System.Collections.Generic;
@@ -11,27 +12,27 @@ namespace OMA_App.ViewModels
 {
     public class TasksPageViewModel
     {
-        public ObservableCollection<TaskDTO> Tasks { get; set; }
 
-        public TasksPageViewModel()
+        private readonly OMAClient _client;
+
+        public ObservableCollection<TaskDTO> Tasks { get; set; } = new();
+
+        public TasksPageViewModel(OMAClient client)
         {
-            Tasks = new ObservableCollection<TaskDTO>();
+            _client = client;
             LoadTasks();
         }
 
-        private void LoadTasks()
+        public async Task LoadTasks()
         {
-            for (int i = 0; i < 20; i++)
+            var templist = await _client.GetTasksAsync();
+            Tasks.Clear();
+            foreach (var task in templist)
             {
-                TaskDTO task = new TaskDTO
-                {
-                    TaskID = i,
-                    Title = "Replacement sensor",
-                    Type = "Type: Vedligeholdelse",
-                    Description = "Description: bla bla bla\nNordsø 1- A1",
-                };
                 Tasks.Add(task);
             }
         }
+
+
     }
 }

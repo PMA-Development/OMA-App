@@ -96,13 +96,25 @@ namespace OMA_App.ViewModels
             }
         }
 
+        private void ResetFields()
+        {
+            Task = new TaskDTO();
+            SelectedIsland = new();
+            SelectedTurbine = new();
+            SelectedUser = new();
+        }
+
         [RelayCommand]
         private async Task CreateTask()
         {
-            task.TurbineID = 1;
-            task.FinishDescription = "";
-            task.OwnerID = Guid.Parse(await TokenService.GetUserIdAsync());
+            Task.Level = LevelEnum._1;
+            Task.FinishDescription = "";
+            Task.OwnerID = Guid.Parse(await TokenService.GetUserIdAsync());
             await _client.AddTaskAsync(Task);
+            await Application.Current.MainPage.DisplayAlert("Confirm","Task has been created", "ok");
+            ResetFields();
+
+
         }
     }
 }

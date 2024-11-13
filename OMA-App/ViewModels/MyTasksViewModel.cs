@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OMA_App.API;
 using OMA_App.Modals;
+using OMA_App.Storage;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -12,27 +13,24 @@ namespace OMA_App.ViewModels
 {
     public partial class MyTasksViewModel : BaseViewModel
     {
-        public ObservableCollection<TaskDTO> Tasks { get; set; }
+        //TODO: Still need some work like messenges and error handling and Messenges for when getting data from the server
+        private readonly OMAClient _client;
 
+        public ObservableCollection<TaskDTO> Tasks { get; set; } = new();
 
-
-        public MyTasksViewModel()
+        public MyTasksViewModel(OMAClient client)
         {
-            Tasks = new ObservableCollection<TaskDTO>();
+       ;    _client = client;
             LoadTasks();
         }
 
-        private void LoadTasks()
+        public async Task LoadTasks()
         {
-            for (int i = 0; i < 10; i++)
+            var test = Guid.Parse(await TokenService.GetUserIdAsync());
+            var templist = await _client.GetUserTasksAsync(test);
+            Tasks.Clear();
+            foreach (var task in templist)
             {
-                TaskDTO task = new TaskDTO
-                {
-                    TaskID = i,
-                    Title = "Replacement sensor",
-                    Type = "Type: Vedligeholdelse",
-                    Description = "Description: bla bla bla\nNordsø 1- A1",
-                };
                 Tasks.Add(task);
             }
         }

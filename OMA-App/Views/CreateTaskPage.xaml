@@ -12,7 +12,7 @@
         <Label Text="Title:" />
         <Entry Placeholder="Enter title" Text="{Binding Task.Title}" />
 
-        <Label Text="Type:" />
+        <Label Text="Task Type:" />
         <Entry Placeholder="Enter type" Text="{Binding Task.Type}" />
 
         <Label Text="Description:" />

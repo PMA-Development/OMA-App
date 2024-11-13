@@ -27,7 +27,7 @@ namespace OMA_App.ViewModels
 
         private async void GetTurbines()
         {
-           var tempList =  await _client.GetTurbinesAsync();
+            var tempList = await _client.GetTurbinesAsync();
             Turbines = tempList.ToObservableCollection();
         }
 
@@ -66,6 +66,6 @@ namespace OMA_App.ViewModels
             //}
         }
 
-       
+
     }
 }

@@ -29,8 +29,6 @@
                                 <Label Background="LightGreen" Text="Task 2" FontSize="Medium" FontAttributes="Bold" Padding="20,0,0,10"/>
                                 <Label Background="LightGreen" Text="Task 3" FontSize="Medium" FontAttributes="Bold" Padding="20,0,0,10"/>
                             </VerticalStackLayout>
-                            <Button Text="Login" Command="{Binding BindingContext.LoginCommand, Source={x:Reference _collectionView}}" />
-                            <Button Text="Logout" Command="{Binding BindingContext.LogoutCommand, Source={x:Reference _collectionView}}" />
                         </StackLayout>
                     </Grid>
                 </Frame>
