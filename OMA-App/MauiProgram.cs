@@ -8,6 +8,7 @@ using OMA_App.ViewModels;
 using OMA_App.Modals;
 using CommunityToolkit.Maui.Core;
 using OMA_App.API;
+using OMA_App.ErrorServices;
 
 namespace OMA_App
 {
@@ -62,6 +63,7 @@ namespace OMA_App
             builder.Services.AddTransient<AccountPage>();
 
             builder.Services.AddSingleton<AuthenticationService>();
+            //builder.Services.AddSingleton<ErrorService>();
 #if DEBUG
             builder.Logging.AddDebug();
 

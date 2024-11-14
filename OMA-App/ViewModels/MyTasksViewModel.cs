@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OMA_App.API;
+using OMA_App.ErrorServices;
 using OMA_App.Modals;
 using OMA_App.Storage;
 using System.Collections.ObjectModel;
@@ -14,7 +15,7 @@ namespace OMA_App.ViewModels
     public partial class MyTasksViewModel : BaseViewModel
     {
         //TODO: Still need some work like messenges and error handling and Messenges for when getting data from the server
-        //TODO: still need stuff
+
         private readonly OMAClient _client;
 
         public ObservableCollection<TaskDTO> Tasks { get; set; } = new();
@@ -26,6 +27,15 @@ namespace OMA_App.ViewModels
 
         public async Task LoadTasks()
         {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
             var test = Guid.Parse(await TokenService.GetUserIdAsync());
             var templist = await _client.GetUserTasksAsync(test);
             Tasks.Clear();
@@ -38,7 +48,7 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task ViewTask(TaskDTO task)
         {
-            await Application.Current.MainPage.ShowPopupAsync(new MyTasksModal(task));
+            await Application.Current.MainPage.ShowPopupAsync(new MyTasksModal(task,_client));
         }
 
         [RelayCommand]

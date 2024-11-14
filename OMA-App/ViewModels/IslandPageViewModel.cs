@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using OMA_App.API;
 using OMA_App.Models;
+using OMA_App.ErrorServices;
 
 namespace OMA_App.ViewModels
 {
@@ -30,7 +31,6 @@ namespace OMA_App.ViewModels
             _allTurbines = new ObservableCollection<TurbineDTO>();
         }
 
-        // String property for receiving the query parameter, then parse to int
         private string islandIdString;
         public string IslandIdString
         {
@@ -41,7 +41,7 @@ namespace OMA_App.ViewModels
                 if (int.TryParse(value, out var id))
                 {
                     IslandId = id;
-                    GetTurbines();  // Load turbines after setting IslandId
+                    GetTurbines();
                 }
             }
         }

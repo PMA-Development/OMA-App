@@ -4,6 +4,7 @@ using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
 using OMA_App.API;
 using OMA_App.Authentication;
+using OMA_App.ErrorServices;
 using OMA_App.Storage;
 using OMA_App.Views;
 using System.Collections.ObjectModel;
@@ -45,6 +46,7 @@ namespace OMA_App.ViewModels
 
 
     }
-
-
 }
+
+
+

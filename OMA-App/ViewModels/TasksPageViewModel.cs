@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using OMA_App.API;
+using OMA_App.ErrorServices;
 using OMA_App.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OMA_App.ViewModels
 {
-    public partial class TasksPageViewModel
+    public partial class TasksPageViewModel : BaseViewModel
     {
 
         private readonly OMAClient _client;
@@ -24,7 +25,7 @@ namespace OMA_App.ViewModels
 
         public async Task LoadTasks()
         {
-            var templist = await _client.GetTasksAsync();
+            var templist = await _client.GetUncompletedTasksAsync();
             Tasks.Clear();
             foreach (var task in templist)
             {
