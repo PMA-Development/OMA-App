@@ -4,9 +4,16 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:OMA_App.API"
+    xmlns:converter="clr-namespace:OMA_App.Converters"
     xmlns:vm="clr-namespace:OMA_App.ViewModels"
     Title="TasksPage"
     x:DataType="vm:TasksPageViewModel">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:LevelEnumToStringConverter x:Key="LevelEnumToStringConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <CollectionView x:Name="_collectionView" ItemsSource="{Binding Tasks}">
         <CollectionView.Header>
@@ -43,6 +50,10 @@
                                 FontAttributes="Bold"
                                 FontSize="Medium"
                                 Text="{Binding Description}" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                Text="{Binding Level, Converter={StaticResource LevelEnumToStringConverter}}" />
                             <HorizontalStackLayout
                                 Margin="0,20,0,0"
                                 x:DataType="vm:TasksPageViewModel"

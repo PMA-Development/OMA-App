@@ -77,8 +77,7 @@ namespace OMA_App.ViewModels
 
             await _client.UpdateTaskAsync(task);
 
-            if (index >= 0)
-                Tasks[index] = task;
+            await LoadTasks();  //we reload the entire list to match server values and fix a problem with the LevelEnumToStringConverter not working as intended
 
 
         }
