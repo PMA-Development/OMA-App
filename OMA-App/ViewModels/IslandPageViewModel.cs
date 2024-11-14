@@ -9,7 +9,7 @@ using OMA_App.ErrorServices;
 
 namespace OMA_App.ViewModels
 {
-    [QueryProperty(nameof(IslandIdString), "IslandId")]  
+    [QueryProperty(nameof(IslandIdString), "IslandId")]
     public partial class IslandPageViewModel : BaseViewModel
     {
         private readonly OMAClient _client;
@@ -21,14 +21,14 @@ namespace OMA_App.ViewModels
         private string searchText;
 
         [ObservableProperty]
-        private ObservableCollection<TurbineDTO> turbines = new();
+        private ObservableCollection<TurbineTask> turbinesTasks = new();
 
-        private ICollection<TurbineDTO> _allTurbines;
+        private ICollection<TurbineTask> _allTurbinesTasks;
 
         public IslandPageViewModel(OMAClient client)
         {
             _client = client;
-            _allTurbines = new ObservableCollection<TurbineDTO>();
+            _allTurbinesTasks = new ObservableCollection<TurbineTask>();
         }
 
         private string islandIdString;
@@ -41,38 +41,64 @@ namespace OMA_App.ViewModels
                 if (int.TryParse(value, out var id))
                 {
                     IslandId = id;
-                    GetTurbines();
+                    GetTurbinesWithTasks();
                 }
             }
         }
 
-        private async void GetTurbines()
+        private async void GetTurbinesWithTasks()
         {
-            _allTurbines = await _client.GetTurbinesIslandAsync(islandId);
+
+            _allTurbinesTasks.Clear();
+
+            var turbines = await _client.GetTurbinesIslandAsync(islandId); 
+            var allUncompletedTasks = await _client.GetUncompletedTasksAsync(); 
+
+
+            var turbineIdsInIsland = turbines.Select(t => t.TurbineID).ToHashSet(); 
+            var tasksByTurbine = allUncompletedTasks
+                .Where(task => turbineIdsInIsland.Contains(task.TurbineID)) 
+                .GroupBy(task => task.TurbineID) 
+                .ToDictionary(group => group.Key, group => group.ToList());
+
+      
+            foreach (var turbine in turbines)
+            {
+                
+                var turbineTasks = tasksByTurbine.ContainsKey(turbine.TurbineID)
+                    ? tasksByTurbine[turbine.TurbineID]
+                    : new List<TaskDTO>();
+
+                
+                var turbineTask = new TurbineTask
+                {
+                    Title = turbine.Title,
+                    TaskDTOs = new ObservableCollection<TaskDTO>(turbineTasks)
+                };
+
+                _allTurbinesTasks.Add(turbineTask);
+            }
+
             PerformSearch();
         }
 
-        partial void OnSearchTextChanged(string value)
-        {
-            PerformSearch();
-        }
+
 
         private void PerformSearch()
         {
             if (string.IsNullOrWhiteSpace(SearchText))
             {
-                Turbines = new ObservableCollection<TurbineDTO>(_allTurbines);
+                TurbinesTasks = new ObservableCollection<TurbineTask>(_allTurbinesTasks);
             }
             else
             {
-                var filteredTurbines = _allTurbines
+                var filteredTurbines = _allTurbinesTasks
                     .Where(t => t.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
-                Turbines = new ObservableCollection<TurbineDTO>(filteredTurbines);
+                TurbinesTasks = new ObservableCollection<TurbineTask>(filteredTurbines);
             }
         }
-
 
         [RelayCommand]
         private async Task Return()
