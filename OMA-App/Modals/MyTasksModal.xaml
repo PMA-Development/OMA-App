@@ -40,6 +40,7 @@
                 Text="Complete"
                 VerticalOptions="Center" />
             <Button
+                Command="{Binding SaveCommand}"
                 HorizontalOptions="Start"
                 Text="Save"
                 VerticalOptions="Center" />

@@ -2,6 +2,7 @@
 using OMA_App.API;
 using OMA_App.ErrorServices;
 using OMA_App.Models;
+using OMA_App.Storage;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,6 +32,55 @@ namespace OMA_App.ViewModels
             {
                 Tasks.Add(task);
             }
+        }
+
+        [RelayCommand]
+        private async Task Accept(TaskDTO task)
+        {
+            bool result = await Application.Current.MainPage.DisplayAlert("", "Do you want to accep this task?", "Yes", "No");
+
+            if (result)
+            {
+                task.UserID = Guid.Parse(await TokenService.GetUserIdAsync());
+                try
+                {
+                    await _client.UpdateTaskAsync(task);
+                }
+                catch (Exception)
+                {
+                    await Application.Current.MainPage.DisplayAlert("", "Something went wrong when accepting task", "ok");
+                }
+
+            }
+
+        }
+
+        [RelayCommand]
+        private async Task EscalateTask(TaskDTO task)
+        {
+            string action = await Application.Current.MainPage.DisplayActionSheet("Escalate to?", "Cancel", null, "Level 1", "Level 2", "Level 3");
+            int index = Tasks.IndexOf(task);
+            switch (action)
+            {
+                case "Level 1":
+                    task.Level = LevelEnum._1;
+                    break;
+                case "Level 2":
+                    task.Level = LevelEnum._2;
+                    break;
+                case "Level 3":
+                    task.Level = LevelEnum._3;
+                    break;
+                default:
+                    return;
+            }
+
+            await _client.UpdateTaskAsync(task);
+
+            if (index >= 0)
+                Tasks[index] = task;
+
+
         }
 
 

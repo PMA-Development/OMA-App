@@ -1,5 +1,4 @@
-﻿using Android.Renderscripts;
-using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OMA_App.API;
@@ -40,6 +39,20 @@ namespace OMA_App.ViewModels
             await _client.UpdateTaskAsync(TaskObj);
             _closePopupAction?.Invoke();
         }
+
+        [RelayCommand]
+        private async Task Save()
+        {
+            bool test = await Application.Current.MainPage.DisplayAlert("Save", "Do you want to save changes?", "Yes", "No");
+
+            if (test)
+                await _client.UpdateTaskAsync(TaskObj);
+
+            _closePopupAction?.Invoke();
+        }
+
+
+
 
         [RelayCommand]
         private async Task Close()

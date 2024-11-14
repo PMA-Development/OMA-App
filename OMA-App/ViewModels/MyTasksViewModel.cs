@@ -22,39 +22,48 @@ namespace OMA_App.ViewModels
 
         public MyTasksViewModel(OMAClient client)
         {
-       ;    _client = client;
+            ; _client = client;
         }
 
         public async Task LoadTasks()
         {
+            Guid userId = Guid.Parse(await TokenService.GetUserIdAsync());
+            ICollection<TaskDTO> templist;
             try
             {
+                if (userId == Guid.Empty)
+                    return;
+
+                templist = await _client.GetUserTasksAsync(userId);
+
+                Tasks.Clear();
+                foreach (var task in templist)
+                {
+                    Tasks.Add(task);
+                }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                throw;
+                await Application.Current.MainPage.DisplayAlert("", e.Message, "ok");
+                return;
             }
-            var test = Guid.Parse(await TokenService.GetUserIdAsync());
-            var templist = await _client.GetUserTasksAsync(test);
-            Tasks.Clear();
-            foreach (var task in templist)
-            {
-                Tasks.Add(task);
-            }
+
+
+
         }
 
         [RelayCommand]
         private async Task ViewTask(TaskDTO task)
         {
-            await Application.Current.MainPage.ShowPopupAsync(new MyTasksModal(task,_client));
+            await Application.Current.MainPage.ShowPopupAsync(new MyTasksModal(task, _client));
         }
 
         [RelayCommand]
         private async Task EscalateTask(TaskDTO task)
         {
-             string action = await Application.Current.MainPage.DisplayActionSheet("Escalate to?","Cancel",null,"Level 1","Level 2","Level 3");
+            string action = await Application.Current.MainPage.DisplayActionSheet("Escalate to?", "Cancel", null, "Level 1", "Level 2", "Level 3");
             int index = Tasks.IndexOf(task);
             switch (action)
             {
@@ -70,13 +79,13 @@ namespace OMA_App.ViewModels
                 default:
                     return;
             }
-            
+
             await _client.UpdateTaskAsync(task);
 
             if (index >= 0)
                 Tasks[index] = task;
-            
-           
+
+
         }
     }
 }
