@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OMA_App.ViewModels
 {
-    public class TasksPageViewModel
+    public partial class TasksPageViewModel
     {
 
         private readonly OMAClient _client;

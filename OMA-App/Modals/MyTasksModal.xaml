@@ -13,7 +13,7 @@
         <HorizontalStackLayout Spacing="20" Padding="50,10,0,0">
             <Button Text="Complete" VerticalOptions="Center" HorizontalOptions="Start"/>
             <Button Text="Save" VerticalOptions="Center" HorizontalOptions="Start"/>
-            <Button Text="Close" VerticalOptions="Center" HorizontalOptions="Start" Clicked="Close_Button"/>
+            <Button Text="Close" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding CloseCommand}"/>
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </mct:Popup>
