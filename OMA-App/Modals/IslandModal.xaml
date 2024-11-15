@@ -7,11 +7,13 @@
     xmlns:models="clr-namespace:OMA_App.API"
     xmlns:vm="clr-namespace:OMA_App.ViewModels"
     CanBeDismissedByTappingOutsideOfPopup="True"
-    Size="350,220">
+    HorizontalOptions="Center"
+    VerticalOptions="Center">
 
 
     <VerticalStackLayout
         Padding="0,10,0,0"
+          Margin="20,20,20,80"
         x:DataType="vm:IslandModalViewModel"
         Background="White">
         <Label
@@ -35,26 +37,19 @@
             Padding="5"
             Stroke="Black"
             WidthRequest="300">
-            <!--<CollectionView
-                ItemsSource="{Binding DeviceDataDTOs}"
-                x:DataType="models:DeviceDataDTO"
-                SelectionMode="None">
+            <CollectionView ItemsSource="{Binding AttributeDTOs}" SelectionMode="None">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:AttributeDTO">
                         <StackLayout>
-                            <Label
-                                FontSize="14"
-                                Text="{Binding Type}" />
-                            <Label
-                                FontSize="12"
-                                Text="{Binding }" />
+                            <Label FontSize="14" Text="{Binding Name}" />
+                            <Label FontSize="12" Text="{Binding Value}" />
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-            </CollectionView>-->
-
+            </CollectionView>
         </Border>
-        <HorizontalStackLayout Padding="25,10,0,0" Spacing="20">
+
+        <HorizontalStackLayout Padding="25,10,0,10" Spacing="20">
             <Button
                 HorizontalOptions="Start"
                 Text="Shutdown"
