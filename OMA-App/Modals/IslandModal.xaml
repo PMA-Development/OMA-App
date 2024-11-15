@@ -35,11 +35,24 @@
             Padding="5"
             Stroke="Black"
             WidthRequest="300">
-            <StackLayout>
-                <Label Text="Data" />
-                <Label Text="Data" />
-                <Label Text="Data" />
-            </StackLayout>
+            <!--<CollectionView
+                ItemsSource="{Binding DeviceDataDTOs}"
+                x:DataType="models:DeviceDataDTO"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout>
+                            <Label
+                                FontSize="14"
+                                Text="{Binding Type}" />
+                            <Label
+                                FontSize="12"
+                                Text="{Binding }" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>-->
+
         </Border>
         <HorizontalStackLayout Padding="25,10,0,0" Spacing="20">
             <Button

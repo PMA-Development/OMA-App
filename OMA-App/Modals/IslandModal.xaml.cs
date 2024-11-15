@@ -6,6 +6,7 @@ namespace OMA_App.Modals;
 
 public partial class IslandModal : Popup
 {
+	//TODO: WIP IMPORTANT
 	private readonly OMAClient _client;
 	public IslandModal(int turbineId, OMAClient client)
 	{

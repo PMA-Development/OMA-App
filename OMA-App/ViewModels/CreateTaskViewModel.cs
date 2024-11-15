@@ -113,9 +113,10 @@ namespace OMA_App.ViewModels
             }
         }
 
-
+        //TODO: fix so it does not complain about not finding turbines on finished task creation
         partial void OnSelectedIslandChanged(IslandDTO value)
         {
+            
             LoadTurbinesForIsland();
         }
 
