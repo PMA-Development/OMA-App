@@ -12,6 +12,7 @@ namespace OMA_App.Models
     {
         public string Title { get; set; }
 
+        public int TurbineId { get; set; }
         public ObservableCollection<TaskDTO> TaskDTOs { get; set; } = new();
 
     }

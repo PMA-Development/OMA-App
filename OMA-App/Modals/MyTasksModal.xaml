@@ -6,6 +6,7 @@
     xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
     xmlns:models="clr-namespace:OMA_App.API"
     xmlns:vm="clr-namespace:OMA_App.ViewModels"
+    
     CanBeDismissedByTappingOutsideOfPopup="True"
     Size="1000,400">
     <VerticalStackLayout

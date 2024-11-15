@@ -43,9 +43,9 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task Save()
         {
-            bool test = await Application.Current.MainPage.DisplayAlert("Save", "Do you want to save changes?", "Yes", "No");
+            bool result = await Application.Current.MainPage.DisplayAlert("Save", "Do you want to save changes?", "Yes", "No");
 
-            if (test)
+            if (result)
                 await _client.UpdateTaskAsync(TaskObj);
 
             _closePopupAction?.Invoke();

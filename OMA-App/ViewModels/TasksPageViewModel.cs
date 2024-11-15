@@ -16,7 +16,7 @@ namespace OMA_App.ViewModels
     {
 
         private readonly OMAClient _client;
-
+        //TODO: remove accept button on tasks with users
         public ObservableCollection<TaskDTO> Tasks { get; set; } = new();
 
         public TasksPageViewModel(OMAClient client)

@@ -31,7 +31,7 @@
                     <Grid>
                         <VerticalStackLayout>
                             <VerticalStackLayout.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IslandPageViewModel}}, Path=OpenTurbineCommand}" />
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IslandPageViewModel}}, Path=OpenTurbineCommand}" x:DataType="model:TurbineTask" CommandParameter="{Binding TurbineId}" />
                             </VerticalStackLayout.GestureRecognizers>
 
                             <Label Padding="10, 5, 0, 5" Text="{Binding Title}" FontSize="Medium" FontAttributes="Bold" />

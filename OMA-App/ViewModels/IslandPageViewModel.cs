@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using OMA_App.API;
 using OMA_App.Models;
 using OMA_App.ErrorServices;
+using CommunityToolkit.Maui.Views;
+using OMA_App.Views;
+using OMA_App.Modals;
 
 namespace OMA_App.ViewModels
 {
@@ -73,6 +76,7 @@ namespace OMA_App.ViewModels
                 var turbineTask = new TurbineTask
                 {
                     Title = turbine.Title,
+                    TurbineId = turbine.TurbineID,
                     TaskDTOs = new ObservableCollection<TaskDTO>(turbineTasks)
                 };
 
@@ -107,9 +111,9 @@ namespace OMA_App.ViewModels
         }
 
         [RelayCommand]
-        private void OpenTurbine()
+        private async void OpenTurbine(int turbineID)
         {
-            // Handle turbine modal opening logic
+           await Application.Current.MainPage.ShowPopupAsync(new IslandModal(turbineID, _client));
         }
     }
 }

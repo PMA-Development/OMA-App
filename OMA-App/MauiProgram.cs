@@ -41,6 +41,7 @@ namespace OMA_App
 
             builder.Services.AddScoped(sp => new OMAClient(Constants.APIURI, new HttpClient()));
             builder.Services.AddTransient<MyTasksModal>();
+            builder.Services.AddTransient<IslandModal>();
 
             // Continue initializing your .NET MAUI App here
 

@@ -58,7 +58,6 @@ namespace OMA_App.ViewModels
                     }
                 }
 
-
                 var islandWithTasks = new IslandTask
                 {
                     IslandDTO = island,
