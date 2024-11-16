@@ -8,7 +8,6 @@ namespace OMA_App
     public partial class AppShell : Shell
     {
 
-        private bool _isLoggedIn;
         public AppShell()
         {
             InitializeComponent();

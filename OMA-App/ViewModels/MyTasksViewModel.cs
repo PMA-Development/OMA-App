@@ -2,13 +2,13 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using OMA_App.API;
 using OMA_App.ErrorServices;
 using OMA_App.Modals;
 using OMA_App.Storage;
 using System.Collections.ObjectModel;
 using System;
 using System.Threading.Tasks;
+using OMA_App.API;
 
 namespace OMA_App.ViewModels
 {

@@ -23,7 +23,7 @@ namespace OMA_App.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-           await _vm.LoadIslandsWithTasks();
+           //await _vm.LoadIslandsWithTasks();
         }
 
     }
