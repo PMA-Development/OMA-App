@@ -40,7 +40,7 @@ namespace OMA_App.Storage
             return await SecureStorage.GetAsync(UserIdKey);
         }
 
-
+        
 
         public static void ClearTokens()
         {

@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using OMA_App.Storage;
 using System.Linq;
+using OMA_App.ErrorServices;
 
 namespace OMA_App.ViewModels
 {
@@ -21,6 +22,7 @@ namespace OMA_App.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<UserDTO> users = new();
+
         [ObservableProperty]
         private ObservableCollection<TurbineDTO> turbines = new();
 
@@ -36,10 +38,10 @@ namespace OMA_App.ViewModels
         [ObservableProperty]
         private TurbineDTO selectedTurbine;
 
-        public CreateTaskViewModel(OMAClient client)
+        // Constructor to inject ErrorService and OMAClient
+        public CreateTaskViewModel(ErrorService errorService, OMAClient client) : base(errorService)
         {
             _client = client;
-
         }
 
         public async Task GetProperties()
@@ -61,11 +63,11 @@ namespace OMA_App.ViewModels
             }
             catch (ApiException apiEx)
             {
-                await ShowErrorAlert(apiEx);
+                await _errorService.ShowErrorAlert(apiEx);
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
+                await _errorService.DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
             }
         }
 
@@ -82,11 +84,11 @@ namespace OMA_App.ViewModels
             }
             catch (ApiException apiEx)
             {
-                await ShowErrorAlert(apiEx);
+                await _errorService.ShowErrorAlert(apiEx);
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
+                await _errorService.DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
             }
         }
 
@@ -105,18 +107,16 @@ namespace OMA_App.ViewModels
             }
             catch (ApiException apiEx)
             {
-                await ShowErrorAlert(apiEx);
+                await _errorService.ShowErrorAlert(apiEx);
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
+                await _errorService.DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
             }
         }
 
-        //TODO: fix so it does not complain about not finding turbines on finished task creation
         partial void OnSelectedIslandChanged(IslandDTO value)
         {
-            
             LoadTurbinesForIsland();
         }
 
@@ -155,47 +155,22 @@ namespace OMA_App.ViewModels
 
                 int result = await _client.AddTaskAsync(Task);
 
-       
-                await DisplayAlertAsync("Success", "Task has been created successfully");
-
+                await _errorService.DisplayAlertAsync("Success", "Task has been created successfully");
 
                 ResetFields();
             }
             catch (ApiException apiEx)
             {
-
-                await ShowErrorAlert(apiEx);
+                await _errorService.ShowErrorAlert(apiEx);
             }
             catch (Exception ex) when (ex is FormatException || ex is ArgumentNullException)
             {
-
-                await DisplayAlertAsync("Error", "Invalid input or data missing. Please review your information.");
+                await _errorService.DisplayAlertAsync("Error", "Invalid input or data missing. Please review your information.");
             }
             catch (Exception ex)
             {
-
-                await DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
+                await _errorService.DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
             }
         }
-
-
-        private async Task ShowErrorAlert(ApiException apiEx)
-        {
-            string message = apiEx.StatusCode switch
-            {
-                400 => "Invalid input. Please check your data.",
-                401 => "You are not authorized to perform this action.",
-                500 => "An error occurred on the server. Please try again later.",
-                _ => $"Unexpected error: {apiEx.Message}",
-            };
-            await DisplayAlertAsync("Error", message);
-        }
-
-
-        private async Task DisplayAlertAsync(string title, string message)
-        {
-            await Application.Current.MainPage.DisplayAlert(title, message, "OK");
-        }
-
     }
 }

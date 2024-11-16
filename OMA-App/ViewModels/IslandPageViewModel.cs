@@ -28,7 +28,8 @@ namespace OMA_App.ViewModels
 
         private ICollection<TurbineTask> _allTurbinesTasks;
 
-        public IslandPageViewModel(OMAClient client)
+        public IslandPageViewModel(OMAClient client, ErrorService errorService)
+            : base(errorService)
         {
             _client = client;
             _allTurbinesTasks = new ObservableCollection<TurbineTask>();
@@ -51,42 +52,46 @@ namespace OMA_App.ViewModels
 
         private async void GetTurbinesWithTasks()
         {
-
-            _allTurbinesTasks.Clear();
-
-            var turbines = await _client.GetTurbinesIslandAsync(islandId); 
-            var allUncompletedTasks = await _client.GetUncompletedTasksAsync(); 
-
-
-            var turbineIdsInIsland = turbines.Select(t => t.TurbineID).ToHashSet(); 
-            var tasksByTurbine = allUncompletedTasks
-                .Where(task => turbineIdsInIsland.Contains(task.TurbineID)) 
-                .GroupBy(task => task.TurbineID) 
-                .ToDictionary(group => group.Key, group => group.ToList());
-
-      
-            foreach (var turbine in turbines)
+            try
             {
-                
-                var turbineTasks = tasksByTurbine.ContainsKey(turbine.TurbineID)
-                    ? tasksByTurbine[turbine.TurbineID]
-                    : new List<TaskDTO>();
+                _allTurbinesTasks.Clear();
 
-                
-                var turbineTask = new TurbineTask
+                var turbines = await _client.GetTurbinesIslandAsync(islandId);
+                var allUncompletedTasks = await _client.GetUncompletedTasksAsync();
+
+                var turbineIdsInIsland = turbines.Select(t => t.TurbineID).ToHashSet();
+                var tasksByTurbine = allUncompletedTasks
+                    .Where(task => turbineIdsInIsland.Contains(task.TurbineID))
+                    .GroupBy(task => task.TurbineID)
+                    .ToDictionary(group => group.Key, group => group.ToList());
+
+                foreach (var turbine in turbines)
                 {
-                    Title = turbine.Title,
-                    TurbineId = turbine.TurbineID,
-                    TaskDTOs = new ObservableCollection<TaskDTO>(turbineTasks)
-                };
+                    var turbineTasks = tasksByTurbine.ContainsKey(turbine.TurbineID)
+                        ? tasksByTurbine[turbine.TurbineID]
+                        : new List<TaskDTO>();
 
-                _allTurbinesTasks.Add(turbineTask);
+                    var turbineTask = new TurbineTask
+                    {
+                        Title = turbine.Title,
+                        TurbineId = turbine.TurbineID,
+                        TaskDTOs = new ObservableCollection<TaskDTO>(turbineTasks)
+                    };
+
+                    _allTurbinesTasks.Add(turbineTask);
+                }
+
+                PerformSearch();
             }
-
-            PerformSearch();
+            catch (ApiException apiEx)
+            {
+                await _errorService.ShowErrorAlert(apiEx);
+            }
+            catch (Exception e)
+            {
+                await _errorService.DisplayAlertAsync("Error", $"Failed to load turbines or tasks: {e.Message}");
+            }
         }
-
-
 
         private void PerformSearch()
         {
@@ -113,7 +118,14 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async void OpenTurbine(int turbineID)
         {
-           await Application.Current.MainPage.ShowPopupAsync(new IslandModal(turbineID, _client));
+            try
+            {
+                await Application.Current.MainPage.ShowPopupAsync(new IslandModal(turbineID, _client,_errorService));
+            }
+            catch (Exception e)
+            {
+                await _errorService.DisplayAlertAsync("Error", $"Failed to open turbine details: {e.Message}");
+            }
         }
     }
 }

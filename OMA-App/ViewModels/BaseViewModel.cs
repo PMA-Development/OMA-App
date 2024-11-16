@@ -10,10 +10,10 @@ namespace OMA_App.ViewModels
 {
     public class BaseViewModel : ObservableObject
     {
-        //private readonly ErrorService _errorService;
-        //public BaseViewModel(ErrorService errorService)
-        //{
-        //        _errorService = errorService;
-        //}
+        protected ErrorService _errorService { get; }
+        public BaseViewModel(ErrorService errorService)
+        {
+            _errorService = errorService;
+        }
     }
 }

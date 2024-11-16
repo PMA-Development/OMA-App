@@ -16,48 +16,71 @@ namespace OMA_App.ViewModels
         private readonly OMAClient _client;
         private readonly Action _closePopupAction;
 
-        public MyTasksModalViewModel(TaskDTO task, Action closePopupAction, OMAClient client)
+        public MyTasksModalViewModel(TaskDTO task, Action closePopupAction, OMAClient client, ErrorService errorService)
+            : base(errorService)
         {
             TaskObj = task;
             _closePopupAction = closePopupAction;
             _client = client;
         }
 
-
         [RelayCommand]
         private async Task Complete()
         {
-            string result = await Application.Current.MainPage.DisplayPromptAsync("Write your finished Description", "");
-
-            if (String.IsNullOrWhiteSpace(result))
+            try
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Description can't be empty", "Ok");
-                return;
+                string result = await Application.Current.MainPage.DisplayPromptAsync("Write your finished Description", "");
+
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    await _errorService.DisplayAlertAsync("Error", "Description can't be empty");
+                    return;
+                }
+
+                TaskObj.FinishDescription = result;
+                TaskObj.IsCompleted = true;
+                await _client.UpdateTaskAsync(TaskObj);
+                _closePopupAction?.Invoke();
             }
-            TaskObj.FinishDescription = result;
-            TaskObj.IsCompleted = true;
-            await _client.UpdateTaskAsync(TaskObj);
-            _closePopupAction?.Invoke();
+            catch (ApiException apiEx)
+            {
+                await _errorService.ShowErrorAlert(apiEx);
+            }
+            catch (Exception e)
+            {
+                await _errorService.DisplayAlertAsync("Error", $"Failed to complete the task: {e.Message}");
+            }
         }
 
         [RelayCommand]
         private async Task Save()
         {
-            bool result = await Application.Current.MainPage.DisplayAlert("Save", "Do you want to save changes?", "Yes", "No");
+            try
+            {
+                bool result = await Application.Current.MainPage.DisplayAlert("Save", "Do you want to save changes?", "Yes", "No");
 
-            if (result)
-                await _client.UpdateTaskAsync(TaskObj);
+                if (result)
+                {
+                    await _client.UpdateTaskAsync(TaskObj);
+                }
 
-            _closePopupAction?.Invoke();
+                _closePopupAction?.Invoke();
+            }
+            catch (ApiException apiEx)
+            {
+                await _errorService.ShowErrorAlert(apiEx);
+            }
+            catch (Exception e)
+            {
+                await _errorService.DisplayAlertAsync("Error", $"Failed to save changes: {e.Message}");
+            }
         }
 
-
-
-
         [RelayCommand]
-        private async Task Close()
+        private Task Close()
         {
             _closePopupAction?.Invoke();
+            return Task.CompletedTask;
         }
     }
 }

@@ -64,7 +64,7 @@ namespace OMA_App
             builder.Services.AddTransient<AccountPage>();
 
             builder.Services.AddSingleton<AuthenticationService>();
-            //builder.Services.AddSingleton<ErrorService>();
+            builder.Services.AddSingleton<ErrorService>();
 #if DEBUG
             builder.Logging.AddDebug();
 
