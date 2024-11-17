@@ -40,6 +40,12 @@
                 HorizontalOptions="Start"
                 Text="Complete"
                 VerticalOptions="Center" />
+            <!--<Button
+                Command="{Binding SendDroneCommand}"
+                Text="Send Drone"
+                VerticalOptions="Center"
+                HorizontalOptions="Start"
+                />-->
             <Button
                 Command="{Binding SaveCommand}"
                 HorizontalOptions="Start"

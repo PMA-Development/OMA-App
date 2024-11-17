@@ -7,7 +7,7 @@ namespace OMA_App.Modals;
 
 public partial class IslandModal : Popup
 {
-	//TODO: WIP IMPORTANT
+
 	private readonly OMAClient _client;
     private readonly ErrorService _errorServices;
 

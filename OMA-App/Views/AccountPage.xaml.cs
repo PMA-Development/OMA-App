@@ -12,10 +12,5 @@ public partial class AccountPage : ContentPage
 		BindingContext = _vm = vm;
 	}
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        await _vm.CheckLoginAsync();
 
-    }
 }

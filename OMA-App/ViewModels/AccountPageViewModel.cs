@@ -1,12 +1,12 @@
-﻿using IdentityModel.OidcClient;
-using OMA_App.Authentication;
-using OMA_App.Storage;
-using System.Threading.Tasks;
-using IdentityModel.Client;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using IdentityModel.OidcClient;
+using OMA_App.Authentication;
 using OMA_App.MessageClass;
-using OMA_App.Views;
+using OMA_App.Storage;
 using OMA_App.ErrorServices;
+using System.Threading.Tasks;
 
 namespace OMA_App.ViewModels
 {
@@ -15,28 +15,27 @@ namespace OMA_App.ViewModels
         private readonly OidcClient _client;
         private readonly AuthenticationService _authService;
 
+        [ObservableProperty]
+        private bool isLoggedIn; // Binds to toggle Login and Logout button visibility
+
         public AccountPageViewModel(OidcClient client, AuthenticationService authenticationService, ErrorService errorService)
             : base(errorService)
         {
             _authService = authenticationService;
             _client = client;
-            _ = CheckLoginAsync();
+
+            // Check initial login state
+            Task.Run(CheckLoginAsync);
         }
 
-        public async Task CheckLoginAsync()
+        private async Task CheckLoginAsync()
         {
             var accessToken = await TokenService.GetAccessTokenAsync();
-            if (string.IsNullOrEmpty(accessToken))
-            {
-                await LoginAsync();
-            }
-            else
-            {
-                await LogoutAsync();
-            }
+            IsLoggedIn = !string.IsNullOrEmpty(accessToken);
         }
 
-        private async Task LoginAsync()
+        [RelayCommand]
+        public async Task LoginAsync()
         {
             var result = await _client.LoginAsync();
 
@@ -47,10 +46,12 @@ namespace OMA_App.ViewModels
             }
 
             await _authService.SignInAsync(result);
+            IsLoggedIn = true;
             NotifyLoginStateChanged(true);
         }
 
-        private async Task LogoutAsync()
+        [RelayCommand]
+        public async Task LogoutAsync()
         {
             var idToken = await TokenService.GetIdentityTokenAsync();
             var logoutRequest = new LogoutRequest { IdTokenHint = idToken };
@@ -63,7 +64,8 @@ namespace OMA_App.ViewModels
                 return;
             }
 
-            _authService.SignOut();
+            await _authService.SignOutAsync();
+            IsLoggedIn = false;
             NotifyLoginStateChanged(false);
         }
 

@@ -52,6 +52,31 @@ namespace OMA_App.ViewModels
             }
         }
 
+        //TODO: NOT YET IMPLEMENTED
+        [RelayCommand]
+        private async Task SendDrone()
+        {
+            try
+            {
+                bool result = await Application.Current.MainPage.DisplayAlert("Send drone?", "Do you wanna reserve a drone for this task?", "Yes", "No");
+
+                if (result)
+                {
+                    await Application.Current.MainPage.DisplayAlert("NOT YET IMPLEMENTED", "Do you wanna reserve a drone for this task?", "no", "yes");
+                    //await _client.AssignTaskToFirstAvailableDroneAsync(taskObj.TaskID);
+                }
+
+            }
+            catch (ApiException apiEx)
+            {
+                await _errorService.ShowErrorAlert(apiEx);
+            }
+            catch (Exception e)
+            {
+                await _errorService.DisplayAlertAsync("Error", $"Failed to save changes: {e.Message}");
+            }
+        }
+
         [RelayCommand]
         private async Task Save()
         {

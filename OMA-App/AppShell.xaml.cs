@@ -1,40 +1,57 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using IdentityModel.OidcClient;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
+using OMA_App.Authentication;
 using OMA_App.MessageClass;
-using OMA_App.ViewModels;
 using OMA_App.Views;
 
 namespace OMA_App
 {
     public partial class AppShell : Shell
     {
+        private const string IsLoggedInKey = "IsLoggedIn";
 
-        public AppShell()
+        private readonly OidcClient _oidcClient;
+        private readonly AuthenticationService _authenticationService;
+
+        public AppShell(OidcClient oidcClient, AuthenticationService authenticationService)
         {
             InitializeComponent();
+            _oidcClient = oidcClient;
+            _authenticationService = authenticationService;
+
             Routing.RegisterRoute("mainpage_route", typeof(MainPage));
             Routing.RegisterRoute(nameof(IslandPage), typeof(IslandPage));
             Routing.RegisterRoute(nameof(MyTasksPage), typeof(MyTasksPage));
-            Routing.RegisterRoute(nameof(TasksPage),typeof(TasksPage));
-            WeakReferenceMessenger.Default.Register<LoginStateChangedMessage>(this, (recipient, message) =>
-            {
-                UpdateLoginTabTitle(message.Value);
-            });
+            Routing.RegisterRoute(nameof(TasksPage), typeof(TasksPage));
+
+ 
+            InitializeLoginState();
+
         }
 
-        private void UpdateLoginTabTitle(bool isLoggedIn)
+        private async void InitializeLoginState()
         {
-            var loginTab = this.FindByName<Tab>("LoginTab");
-            if (loginTab != null)
+
+            bool isLoggedIn = Preferences.Get(IsLoggedInKey, false);
+
+            if (!isLoggedIn)
             {
-                loginTab.Title = isLoggedIn ? "Logout" : "Login";
+               var result = await _oidcClient.LoginAsync();
+
+                if (result.IsError)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Logout Error", $"An error occurred during Login: {result.Error}","ok");
+                    return;
+                }
+
+                Preferences.Get(IsLoggedInKey, true);
+                await _authenticationService.SignInAsync(result);
+      
             }
         }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            
-            WeakReferenceMessenger.Default.Unregister<LoginStateChangedMessage>(this);
-        }
+      
     }
 }
