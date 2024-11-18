@@ -52,6 +52,36 @@ namespace OMA_App.ViewModels
         }
 
         [RelayCommand]
+        private async Task ChangeStateTurbine()
+        {
+            var result = await Application.Current.MainPage.DisplayActionSheet("What state do you wanna set the Turbine To?", "Cancel", null, "On", "Off", "Service");
+            var value = result switch
+            {
+                "On" => 1,
+                "Off" => 2,
+                "Service" => 3,
+                _ => 0,
+            };
+
+            if (value > 0)
+                try
+                {
+                    await _client.ActionTurbineAsync("ChangeState", value, TurbineObj.IslandID);
+
+                }
+                catch (ApiException apiEx)
+                {
+                    await _errorService.ShowErrorAlert(apiEx);
+                }
+                catch (Exception e)
+                {
+                    await _errorService.DisplayAlertAsync("Error", $"An error occurred while Changing turbine State: {e.Message}");
+                }
+
+
+        }
+
+        [RelayCommand]
         private Task Close()
         {
             _closePopupAction?.Invoke();

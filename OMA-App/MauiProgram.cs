@@ -38,6 +38,7 @@ namespace OMA_App
                 Browser = new WebAuthenticatorBrowser()
             }));
 
+  
 
             builder.Services.AddScoped(sp => new OMAClient(Constants.APIURI, new HttpClient()));
             builder.Services.AddTransient<MyTasksModal>();

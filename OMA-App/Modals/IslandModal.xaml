@@ -52,7 +52,8 @@
         <HorizontalStackLayout Padding="25,10,0,10" Spacing="20">
             <Button
                 HorizontalOptions="Start"
-                Text="Shutdown"
+                Command="{Binding ChangeStateTurbineCommand}"
+                Text="Change State"
                 VerticalOptions="Center" />
             <Button
                 Command="{Binding CloseCommand}"

@@ -143,10 +143,9 @@ namespace OMA_App.API
         public async Task<ICollection<TurbineDTO>> GetTurbinesIslandAsync(int id, CancellationToken cancellationToken = default) =>
             await SendAsync<ICollection<TurbineDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/Turbine/get-Turbines-Island?id={id}"), cancellationToken);
 
-        public async Task ActionTurbineAsync(string action, int value, TurbineDTO turbine, CancellationToken cancellationToken = default)
+        public async Task ActionTurbineAsync(string action, int value, int turbineId, CancellationToken cancellationToken = default)
         {
-            var request = await CreateRequestAsync(HttpMethod.Post, "api/Turbine/action-Turbine", $"?action={action}&value={value}");
-            request.Content = new StringContent(JsonConvert.SerializeObject(turbine), Encoding.UTF8, "application/json");
+            var request = await CreateRequestAsync(HttpMethod.Post, "api/Turbine/action-Turbine", $"?action={action}&value={value}&Id={turbineId}");
             await SendAsync<string>(request, cancellationToken);
         }
 
