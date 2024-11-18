@@ -3,8 +3,8 @@
     x:Class="OMA_App.Views.TasksPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:models="clr-namespace:OMA_App.API"
     xmlns:converter="clr-namespace:OMA_App.Converters"
+    xmlns:models="clr-namespace:OMA_App.API"
     xmlns:vm="clr-namespace:OMA_App.ViewModels"
     Title="TasksPage"
     x:DataType="vm:TasksPageViewModel">
@@ -12,6 +12,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converter:LevelEnumToStringConverter x:Key="LevelEnumToStringConverter" />
+            <converter:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -59,11 +60,13 @@
                                 x:DataType="vm:TasksPageViewModel"
                                 Spacing="20">
                                 <Button
-                                    Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.AcceptCommand}"
-                                    CommandParameter="{Binding .}"
-                                    HorizontalOptions="Start"
-                                    Text="Accept"
-                                    VerticalOptions="Center" />
+                                Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.AcceptCommand}"
+                                CommandParameter="{Binding .}"
+                                HorizontalOptions="Start"
+                                Text="Accept"
+                                VerticalOptions="Center"
+                                IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type models:TaskDTO}}, Path=UserID, Converter={StaticResource NullToBooleanConverter}}" />
+
                                 <Button
                                     Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.EscalateTaskCommand}"
                                     CommandParameter="{Binding .}"

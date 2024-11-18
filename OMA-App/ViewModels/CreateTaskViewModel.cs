@@ -33,10 +33,10 @@ namespace OMA_App.ViewModels
         private UserDTO selectedUser;
 
         [ObservableProperty]
-        private IslandDTO selectedIsland;
+        private IslandDTO? selectedIsland;
 
         [ObservableProperty]
-        private TurbineDTO selectedTurbine;
+        private TurbineDTO? selectedTurbine;
 
         // Constructor to inject ErrorService and OMAClient
         public CreateTaskViewModel(ErrorService errorService, OMAClient client) : base(errorService)
@@ -94,7 +94,8 @@ namespace OMA_App.ViewModels
 
         private async void LoadTurbinesForIsland()
         {
-            if (SelectedIsland == null) return;
+            if (SelectedIsland == null) 
+                return;
 
             try
             {
@@ -118,6 +119,7 @@ namespace OMA_App.ViewModels
         partial void OnSelectedIslandChanged(IslandDTO value)
         {
             LoadTurbinesForIsland();
+
         }
 
         partial void OnSelectedUserChanged(UserDTO value)
@@ -139,8 +141,8 @@ namespace OMA_App.ViewModels
         private void ResetFields()
         {
             Task = new TaskDTO();
-            SelectedIsland = new();
-            SelectedTurbine = new();
+            SelectedIsland = null;
+            SelectedTurbine = null;
             SelectedUser = new();
         }
 

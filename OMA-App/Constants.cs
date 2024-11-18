@@ -16,6 +16,6 @@ namespace OMA_App
         public static readonly string RedirectUri = "myapp://auth";
 
         // API Configuration
-        public static readonly string APIURI = "https://zlv5j4k2-6001.euw.devtunnels.ms";
+        public static readonly string APIURI = "https://h47c0zbb-6001.euw.devtunnels.ms";
     }
 }
