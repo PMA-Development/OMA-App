@@ -9,6 +9,10 @@ using OMA_App.Modals;
 using CommunityToolkit.Maui.Core;
 using OMA_App.API;
 using OMA_App.ErrorServices;
+using Polly.Caching;
+using Polly.Registry;
+using Polly;
+using OMA_App.Policies;
 
 namespace OMA_App
 {
@@ -28,6 +32,8 @@ namespace OMA_App
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+
+
             builder.Services.AddSingleton(new OidcClient(new()
             {
                 Authority = Constants.Authority,
@@ -38,9 +44,34 @@ namespace OMA_App
                 Browser = new WebAuthenticatorBrowser()
             }));
 
-  
 
-            builder.Services.AddScoped(sp => new OMAClient(Constants.APIURI, new HttpClient()));
+            builder.Services.AddMemoryCache();
+            builder.Services.AddSingleton<IAsyncCacheProvider, Polly.Caching.Memory.MemoryCacheProvider>();
+            builder.Services.AddSingleton<IReadOnlyPolicyRegistry<string>, PolicyRegistry>((serviceProvider) =>
+            {
+                PolicyRegistry registry = new();
+                registry.Add("myCachePolicy",
+                    Polly.Policy.CacheAsync(serviceProvider.GetRequiredService<IAsyncCacheProvider>().AsyncFor<HttpResponseMessage>(),
+                        TimeSpan.FromSeconds(10)));
+                return registry;
+            });
+
+
+            builder.Services.AddHttpClient();
+            builder.Services.AddSingleton<HttpClientPolicies>();
+
+            builder.Services.AddScoped<OMAClient>(sp =>
+            {
+                var policyRegistry = sp.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+                var httpClient = sp.GetRequiredService<HttpClient>();
+                var httpClientPolicies = sp.GetRequiredService<HttpClientPolicies>();
+                return new OMAClient(policyRegistry, Constants.APIURI, httpClient, httpClientPolicies);
+            });
+
+            //builder.Services.AddScoped(sp => new OMAClient(Constants.APIURI, new HttpClient()));
+
+
+
             builder.Services.AddTransient<MyTasksModal>();
             builder.Services.AddTransient<IslandModal>();
 
@@ -66,6 +97,10 @@ namespace OMA_App
 
             builder.Services.AddSingleton<AuthenticationService>();
             builder.Services.AddSingleton<ErrorService>();
+
+          
+
+            
 #if DEBUG
             builder.Logging.AddDebug();
 

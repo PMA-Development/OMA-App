@@ -35,6 +35,8 @@ namespace OMA_App.ViewModels
                 var turbines = await _client.GetTurbinesAsync();
                 var allTasks = await _client.GetUncompletedTasksAsync();
 
+                
+
                 var tasksByTurbine = allTasks
                     .GroupBy(task => task.TurbineID)
                     .ToDictionary(group => group.Key, group => group.ToList());

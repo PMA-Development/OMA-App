@@ -7,7 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
 using Newtonsoft.Json;
+using OMA_App.Policies;
 using OMA_App.Storage;
+using Polly;
+using Polly.Registry;
 
 
 
@@ -18,9 +21,12 @@ namespace OMA_App.API
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl;
         private static readonly Lazy<JsonSerializerSettings> _settings = new Lazy<JsonSerializerSettings>(CreateSerializerSettings);
-
-        public OMAClient(string baseUrl, HttpClient httpClient)
+        private readonly HttpClientPolicies _httpClientPolicies;
+        IAsyncPolicy<HttpResponseMessage> _policy;
+        public OMAClient(IReadOnlyPolicyRegistry<string> policyRegistry, string baseUrl, HttpClient httpClient, HttpClientPolicies httpClientPolicies)
         {
+            _policy = policyRegistry.Get<IAsyncPolicy<HttpResponseMessage>>("myCachePolicy");
+            _httpClientPolicies = httpClientPolicies;
             _baseUrl = baseUrl.EndsWith("/") ? baseUrl : $"{baseUrl}/";
             _httpClient = httpClient;
             Initialize();
@@ -52,7 +58,10 @@ namespace OMA_App.API
 
         private async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
+    
+            using (var response = await _policy.ExecuteAsync(
+            async ct => await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct),
+            cancellationToken))
             {
                 if (!response.IsSuccessStatusCode)
                 {
