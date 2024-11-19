@@ -19,16 +19,23 @@ namespace OMA_App.ViewModels
         public ObservableCollection<IslandDTO> Islands { get; set; } = new();
         public ObservableCollection<TaskDTO> TaskDTOs { get; set; } = new();
 
-        public MainPageViewModel(OMAClient client, ErrorService errorService)
-            : base(errorService)
+        public MainPageViewModel(OMAClient client, ErrorService errorService, IConnectivity connectivity)
+            : base(errorService,connectivity)
         {
             _client = client;
         }
 
         public async Task LoadIslandsWithTasks()
         {
+            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("No connectivity!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
             try
             {
+
                 var islands = await _client.GetIslandsAsync();
                 var turbines = await _client.GetTurbinesAsync();
                 var allTasks = await _client.GetUncompletedTasksAsync();

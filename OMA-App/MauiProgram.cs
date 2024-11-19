@@ -70,7 +70,7 @@ namespace OMA_App
 
             //builder.Services.AddScoped(sp => new OMAClient(Constants.APIURI, new HttpClient()));
 
-
+            builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
 
             builder.Services.AddTransient<MyTasksModal>();
             builder.Services.AddTransient<IslandModal>();

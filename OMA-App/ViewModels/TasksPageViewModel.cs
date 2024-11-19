@@ -15,8 +15,8 @@ namespace OMA_App.ViewModels
 
         public ObservableCollection<TaskDTO> Tasks { get; set; } = new();
 
-        public TasksPageViewModel(OMAClient client, ErrorService errorService)
-            : base(errorService)
+        public TasksPageViewModel(OMAClient client, ErrorService errorService, IConnectivity connectivity)
+            : base(errorService, connectivity)
         {
             _client = client;
         }

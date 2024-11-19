@@ -18,8 +18,8 @@ namespace OMA_App.ViewModels
         [ObservableProperty]
         private bool isLoggedIn; 
 
-        public AccountPageViewModel(OidcClient client, AuthenticationService authenticationService, ErrorService errorService)
-            : base(errorService)
+        public AccountPageViewModel(OidcClient client, AuthenticationService authenticationService, ErrorService errorService,IConnectivity connectivity)
+            : base(errorService, connectivity)
         {
             _authService = authenticationService;
             _client = client;
@@ -29,6 +29,7 @@ namespace OMA_App.ViewModels
 
         private async Task CheckLoginAsync()
         {
+            
             var accessToken = await TokenService.GetAccessTokenAsync();
             IsLoggedIn = !string.IsNullOrEmpty(accessToken);
         }
@@ -36,6 +37,13 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         public async Task LoginAsync()
         {
+            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("No connectivity!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
+
             var result = await _client.LoginAsync();
 
             if (result.IsError)
@@ -52,6 +60,13 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         public async Task LogoutAsync()
         {
+            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("No connectivity!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
+
             var idToken = await TokenService.GetIdentityTokenAsync();
             var logoutRequest = new LogoutRequest { IdTokenHint = idToken };
 

@@ -39,13 +39,14 @@ namespace OMA_App.ViewModels
         private TurbineDTO? selectedTurbine;
 
         // Constructor to inject ErrorService and OMAClient
-        public CreateTaskViewModel(ErrorService errorService, OMAClient client) : base(errorService)
+        public CreateTaskViewModel(ErrorService errorService, OMAClient client,IConnectivity connectivity) : base(errorService, connectivity)
         {
             _client = client;
         }
 
         public async Task GetProperties()
         {
+
             await GetUsers();
             await GetIslands();
         }
@@ -54,6 +55,13 @@ namespace OMA_App.ViewModels
         {
             try
             {
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
+
                 var tempList = await _client.GetUsersAsync();
                 Users.Clear();
                 foreach (var user in tempList)
@@ -75,6 +83,12 @@ namespace OMA_App.ViewModels
         {
             try
             {
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
                 var tempList = await _client.GetIslandsAsync();
                 if (tempList.Count > 0)
                 {
@@ -101,6 +115,12 @@ namespace OMA_App.ViewModels
             if (SelectedIsland == null) 
                 return;
 
+            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("No connectivity!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
             try
             {
                 var turbinesForIsland = await _client.GetTurbinesIslandAsync(SelectedIsland.IslandID);
@@ -155,6 +175,12 @@ namespace OMA_App.ViewModels
         {
             try
             {
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
                 Task.Level = LevelEnum._1;
                 Task.FinishDescription = "";
                 Task.OwnerID = Guid.Parse(await TokenService.GetUserIdAsync());

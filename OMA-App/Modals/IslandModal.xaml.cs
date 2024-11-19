@@ -11,12 +11,12 @@ public partial class IslandModal : Popup
 	private readonly OMAClient _client;
     private readonly ErrorService _errorServices;
 
-    public IslandModal(int turbineId, OMAClient client, ErrorService errorServices)
+    public IslandModal(int turbineId, OMAClient client, ErrorService errorServices,IConnectivity connectivity)
 	{
 		InitializeComponent();
         _client = client;
        _errorServices = errorServices;
-        BindingContext = new IslandModalViewModel(turbineId, () => Close(),_client, _errorServices);
+        BindingContext = new IslandModalViewModel(turbineId, () => Close(),_client, _errorServices, connectivity);
 
     }
 }

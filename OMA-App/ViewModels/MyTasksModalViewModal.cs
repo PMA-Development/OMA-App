@@ -16,8 +16,8 @@ namespace OMA_App.ViewModels
         private readonly OMAClient _client;
         private readonly Action _closePopupAction;
 
-        public MyTasksModalViewModel(TaskDTO task, Action closePopupAction, OMAClient client, ErrorService errorService)
-            : base(errorService)
+        public MyTasksModalViewModel(TaskDTO task, Action closePopupAction, OMAClient client, ErrorService errorService, IConnectivity connectivity)
+            : base(errorService, connectivity)
         {
             TaskObj = task;
             _closePopupAction = closePopupAction;
@@ -34,6 +34,12 @@ namespace OMA_App.ViewModels
                 if (string.IsNullOrWhiteSpace(result))
                 {
                     await _errorService.DisplayAlertAsync("Error", "Description can't be empty");
+                    return;
+                }
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
                     return;
                 }
 

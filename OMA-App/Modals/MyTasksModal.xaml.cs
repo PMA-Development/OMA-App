@@ -12,12 +12,12 @@ public partial class MyTasksModal : Popup
     private readonly OMAClient _client;
     private readonly ErrorService _errorService;
 
-    public MyTasksModal(TaskDTO task, OMAClient client, ErrorService errorService)
+    public MyTasksModal(TaskDTO task, OMAClient client, ErrorService errorService,IConnectivity connectivity)
 	{
 		InitializeComponent();
         _client = client;
         _errorService = errorService;
-        BindingContext = new MyTasksModalViewModel(task, () => Close(), _client, _errorService);
+        BindingContext = new MyTasksModalViewModel(task, () => Close(), _client, _errorService,connectivity);
 
     }
 

@@ -11,9 +11,11 @@ namespace OMA_App.ViewModels
     public class BaseViewModel : ObservableObject
     {
         protected ErrorService _errorService { get; }
-        public BaseViewModel(ErrorService errorService)
+        protected IConnectivity _connectivity;
+        public BaseViewModel(ErrorService errorService, IConnectivity connectivity)
         {
             _errorService = errorService;
+            _connectivity = connectivity;
         }
     }
 }

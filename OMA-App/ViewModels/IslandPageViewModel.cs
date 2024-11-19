@@ -28,8 +28,8 @@ namespace OMA_App.ViewModels
 
         private ICollection<TurbineTask> _allTurbinesTasks;
 
-        public IslandPageViewModel(OMAClient client, ErrorService errorService)
-            : base(errorService)
+        public IslandPageViewModel(OMAClient client, ErrorService errorService,IConnectivity connectivity)
+            : base(errorService, connectivity)
         {
             _client = client;
             _allTurbinesTasks = new ObservableCollection<TurbineTask>();
@@ -54,6 +54,12 @@ namespace OMA_App.ViewModels
         {
             try
             {
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
 
                 var turbines = await _client.GetTurbinesIslandAsync(islandId);
                 var allUncompletedTasks = await _client.GetUncompletedTasksAsync();
@@ -125,7 +131,7 @@ namespace OMA_App.ViewModels
         {
             try
             {
-                await Application.Current.MainPage.ShowPopupAsync(new IslandModal(turbineID, _client,_errorService));
+                await Application.Current.MainPage.ShowPopupAsync(new IslandModal(turbineID, _client,_errorService, _connectivity));
             }
             catch (Exception e)
             {

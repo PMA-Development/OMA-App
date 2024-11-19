@@ -18,8 +18,8 @@ namespace OMA_App.ViewModels
 
         public ObservableCollection<TaskDTO> Tasks { get; set; } = new();
 
-        public MyTasksViewModel(OMAClient client, ErrorService errorService)
-            : base(errorService)
+        public MyTasksViewModel(OMAClient client, ErrorService errorService, IConnectivity connectivity)
+            : base(errorService, connectivity)
         {
             _client = client;
         }
@@ -55,7 +55,7 @@ namespace OMA_App.ViewModels
         {
             try
             {
-                await Application.Current.MainPage.ShowPopupAsync(new MyTasksModal(task, _client, _errorService));
+                await Application.Current.MainPage.ShowPopupAsync(new MyTasksModal(task, _client, _errorService,_connectivity));
             }
             catch (Exception e)
             {
@@ -69,6 +69,14 @@ namespace OMA_App.ViewModels
             try
             {
                 string action = await Application.Current.MainPage.DisplayActionSheet("Escalate to?", "Cancel", null, "Level 1", "Level 2", "Level 3");
+
+
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
 
                 switch (action)
                 {

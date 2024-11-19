@@ -19,8 +19,8 @@ namespace OMA_App.ViewModels
         private readonly OMAClient _client;
         private readonly Action _closePopupAction;
 
-        public IslandModalViewModel(int turbineId, Action closePopupAction, OMAClient client, ErrorService errorService)
-            : base(errorService)
+        public IslandModalViewModel(int turbineId, Action closePopupAction, OMAClient client, ErrorService errorService,IConnectivity connectivity)
+            : base(errorService,connectivity)
         {
             _closePopupAction = closePopupAction;
             _client = client;
@@ -29,6 +29,13 @@ namespace OMA_App.ViewModels
 
         public async Task GetTurbineAndData(int id)
         {
+
+            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("No connectivity!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
             try
             {
                 var turbine = await _client.GetTurbineAsync(id);
@@ -57,6 +64,12 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task ChangeStateTurbine()
         {
+            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("No connectivity!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
             var result = await Application.Current.MainPage.DisplayActionSheet("What state do you wanna set the Turbine To?", "Cancel", null, "On", "Off", "Service");
             var value = result switch
             {
