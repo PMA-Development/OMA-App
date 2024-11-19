@@ -76,11 +76,15 @@ namespace OMA_App.ViewModels
             try
             {
                 var tempList = await _client.GetIslandsAsync();
-                Islands.Clear();
-                foreach (var island in tempList)
+                if (tempList.Count > 0)
                 {
-                    Islands.Add(island);
+                    Islands.Clear();
+                    foreach (var island in tempList)
+                    {
+                        Islands.Add(island);
+                    }
                 }
+                
             }
             catch (ApiException apiEx)
             {

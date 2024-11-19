@@ -29,39 +29,43 @@ namespace OMA_App.ViewModels
         {
             try
             {
-                IslandsWithTasks.Clear();
-
                 var islands = await _client.GetIslandsAsync();
                 var turbines = await _client.GetTurbinesAsync();
                 var allTasks = await _client.GetUncompletedTasksAsync();
 
-                
-
-                var tasksByTurbine = allTasks
-                    .GroupBy(task => task.TurbineID)
-                    .ToDictionary(group => group.Key, group => group.ToList());
-
-                foreach (var island in islands)
+                if (islands != null && turbines != null && allTasks != null)
                 {
-                    var islandTurbines = turbines.Where(turbine => turbine.IslandID == island.IslandID).ToList();
+                    IslandsWithTasks.Clear();
 
-                    var islandTasks = new List<TaskDTO>();
-                    foreach (var turbine in islandTurbines)
+                    var tasksByTurbine = allTasks
+                        .GroupBy(task => task.TurbineID)
+                        .ToDictionary(group => group.Key, group => group.ToList());
+
+                    foreach (var island in islands)
                     {
-                        if (tasksByTurbine.ContainsKey(turbine.TurbineID))
+                        var islandTurbines = turbines.Where(turbine => turbine.IslandID == island.IslandID).ToList();
+
+                        var islandTasks = new List<TaskDTO>();
+                        foreach (var turbine in islandTurbines)
                         {
-                            islandTasks.AddRange(tasksByTurbine[turbine.TurbineID]);
+                            if (tasksByTurbine.ContainsKey(turbine.TurbineID))
+                            {
+                                islandTasks.AddRange(tasksByTurbine[turbine.TurbineID]);
+                            }
                         }
+
+                        var islandWithTasks = new IslandTask
+                        {
+                            IslandDTO = island,
+                            TaskDTOs = new ObservableCollection<TaskDTO>(islandTasks.Take(4))
+                        };
+
+                        IslandsWithTasks.Add(islandWithTasks);
                     }
-
-                    var islandWithTasks = new IslandTask
-                    {
-                        IslandDTO = island,
-                        TaskDTOs = new ObservableCollection<TaskDTO>(islandTasks.Take(4))
-                    };
-
-                    IslandsWithTasks.Add(islandWithTasks);
                 }
+               
+
+               
             }
             catch (ApiException apiEx)
             {

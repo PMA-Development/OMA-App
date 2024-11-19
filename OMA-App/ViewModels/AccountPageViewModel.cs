@@ -16,7 +16,7 @@ namespace OMA_App.ViewModels
         private readonly AuthenticationService _authService;
 
         [ObservableProperty]
-        private bool isLoggedIn; // Binds to toggle Login and Logout button visibility
+        private bool isLoggedIn; 
 
         public AccountPageViewModel(OidcClient client, AuthenticationService authenticationService, ErrorService errorService)
             : base(errorService)
@@ -24,7 +24,6 @@ namespace OMA_App.ViewModels
             _authService = authenticationService;
             _client = client;
 
-            // Check initial login state
             Task.Run(CheckLoginAsync);
         }
 

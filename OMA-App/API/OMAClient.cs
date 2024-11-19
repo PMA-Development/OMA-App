@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -22,15 +23,25 @@ namespace OMA_App.API
         private readonly string _baseUrl;
         private static readonly Lazy<JsonSerializerSettings> _settings = new Lazy<JsonSerializerSettings>(CreateSerializerSettings);
         private readonly HttpClientPolicies _httpClientPolicies;
-        IAsyncPolicy<HttpResponseMessage> _policy;
+        private readonly IAsyncPolicy<HttpResponseMessage> _policy;
+
         public OMAClient(IReadOnlyPolicyRegistry<string> policyRegistry, string baseUrl, HttpClient httpClient, HttpClientPolicies httpClientPolicies)
         {
-            _policy = policyRegistry.Get<IAsyncPolicy<HttpResponseMessage>>("myCachePolicy");
-            _httpClientPolicies = httpClientPolicies;
             _baseUrl = baseUrl.EndsWith("/") ? baseUrl : $"{baseUrl}/";
             _httpClient = httpClient;
+
+            _httpClient.Timeout = Timeout.InfiniteTimeSpan;
+
+            var cachePolicy = policyRegistry.Get<IAsyncPolicy<HttpResponseMessage>>("myCachePolicy");
+
+            var combinedPolicy = httpClientPolicies.CombinedPolicy;
+
+            _policy = cachePolicy != null ? Policy.WrapAsync(cachePolicy, combinedPolicy) : combinedPolicy;
+
+            _httpClientPolicies = httpClientPolicies;
             Initialize();
         }
+
 
         private static JsonSerializerSettings CreateSerializerSettings()
         {
@@ -38,6 +49,7 @@ namespace OMA_App.API
             UpdateJsonSerializerSettings(settings);
             return settings;
         }
+
 
         protected virtual JsonSerializerSettings JsonSerializerSettings => _settings.Value;
 
@@ -56,21 +68,51 @@ namespace OMA_App.API
             return request;
         }
 
-        private async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+        public async Task<T> SafeSendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-    
+            try
+            {
+                return await SendAsync<T>(request, cancellationToken);
+            }
+            catch (ApiException apiEx)
+            {
+                Debug.WriteLine($"API Exception: {apiEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"General Exception: {ex.Message}");
+            }
+
+            await Application.Current.MainPage.DisplayAlert("Request Failed", "Please try again later.", "OK");
+            return default;
+        }
+
+        public async Task<T> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
             using (var response = await _policy.ExecuteAsync(
-            async ct => await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct),
-            cancellationToken))
+                async ct => await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct),
+                cancellationToken))
             {
                 if (!response.IsSuccessStatusCode)
                 {
                     var responseData = await response.Content.ReadAsStringAsync();
-                    throw new ApiException($"Unexpected HTTP status code: {response.StatusCode}", (int)response.StatusCode, responseData, null, null);
+                    throw new ApiException($"Unexpected HTTP status code: {response.StatusCode}",
+                                           (int)response.StatusCode,
+                                           responseData, null, null);
                 }
 
                 var responseStream = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(responseStream, JsonSerializerSettings);
+
+                try
+                {
+                    return JsonConvert.DeserializeObject<T>(responseStream, JsonSerializerSettings);
+                }
+                catch (JsonException ex)
+                {
+                    throw new ApiException("Failed to deserialize JSON response.",
+                                           (int)response.StatusCode,
+                                           responseStream, null, ex);
+                }
             }
         }
 
@@ -78,20 +120,25 @@ namespace OMA_App.API
 
         // Attribute Endpoints
         public async Task<AttributeDTO> GetAttributeAsync(int id, CancellationToken cancellationToken = default) =>
-            await SendAsync<AttributeDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Attribute/get-Attribute?id={id}"), cancellationToken);
+            await SafeSendAsync<AttributeDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Attribute/get-Attribute?id={id}"), cancellationToken);
 
         public async Task<ICollection<AttributeDTO>> GetAttributesAsync(CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<AttributeDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Attribute/get-Attributes"), cancellationToken);
+            await SafeSendAsync<ICollection<AttributeDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Attribute/get-Attributes"), cancellationToken);
 
         public async Task<ICollection<AttributeDTO>> GetAttributeDataByTurbineIdAsync(int id, CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<AttributeDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/Attribute/get-AttributeDataByTurbineId?id={id}"), cancellationToken);
+            await SafeSendAsync<ICollection<AttributeDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/Attribute/get-AttributeDataByTurbineId?id={id}"), cancellationToken);
 
+
+        //DeviceData endpoints
+
+        public async Task<ICollection<DeviceDataDTO>> GetLatestDeviceDataByTurbineIdAsync(int id, CancellationToken cancellationToken = default) =>
+            await SafeSendAsync<ICollection<DeviceDataDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/DeviceData/get-LatestDeviceDataByTurbineId?id={id}"), cancellationToken);
         // Drone Endpoints
         public async Task<DroneDTO> GetDroneAsync(int id, CancellationToken cancellationToken = default) =>
-            await SendAsync<DroneDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Drone/get-Drone?id={id}"), cancellationToken);
+            await SafeSendAsync<DroneDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Drone/get-Drone?id={id}"), cancellationToken);
 
         public async Task<ICollection<DroneDTO>> GetDronesAsync(CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<DroneDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Drone/get-Drones"), cancellationToken);
+            await SafeSendAsync<ICollection<DroneDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Drone/get-Drones"), cancellationToken);
 
         //public async Task MakeDroneAvailableAsync(int droneId, CancellationToken cancellationToken = default)
         //{
@@ -102,23 +149,23 @@ namespace OMA_App.API
 
         // Island Endpoints
         public async Task<IslandDTO> GetIslandAsync(int id, CancellationToken cancellationToken = default) =>
-        await SendAsync<IslandDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Island/get-Island?id={id}"), cancellationToken);
+        await SafeSendAsync<IslandDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Island/get-Island?id={id}"), cancellationToken);
 
         public async Task<ICollection<IslandDTO>> GetIslandsAsync(CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<IslandDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Island/get-Islands"), cancellationToken);
+            await SafeSendAsync<ICollection<IslandDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Island/get-Islands"), cancellationToken);
 
         // Task Endpoints
         public async Task<TaskDTO> GetTaskAsync(int id, CancellationToken cancellationToken = default) =>
-            await SendAsync<TaskDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Task/get-Task?id={id}"), cancellationToken);
+            await SafeSendAsync<TaskDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Task/get-Task?id={id}"), cancellationToken);
 
         public async Task<ICollection<TaskDTO>> GetCompletedTasksAsync(CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<TaskDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Task/get-Completed-Tasks"), cancellationToken);
+            await SafeSendAsync<ICollection<TaskDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Task/get-Completed-Tasks"), cancellationToken);
 
         public async Task<ICollection<TaskDTO>> GetUncompletedTasksAsync(CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<TaskDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Task/get-Uncompleted-Tasks"), cancellationToken);
+            await SafeSendAsync<ICollection<TaskDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Task/get-Uncompleted-Tasks"), cancellationToken);
 
         public async Task<ICollection<TaskDTO>> GetUserTasksAsync(Guid id, CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<TaskDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/Task/get-User-Tasks?id={id}"), cancellationToken);
+            await SafeSendAsync<ICollection<TaskDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/Task/get-User-Tasks?id={id}"), cancellationToken);
 
         //public async Task<DroneDTO> AssignTaskToFirstAvailableDroneAsync(int taskId, CancellationToken cancellationToken = default)
         //{
@@ -132,35 +179,35 @@ namespace OMA_App.API
         {
             var request = await CreateRequestAsync(HttpMethod.Post, "api/Task/add-Task");
             request.Content = new StringContent(JsonConvert.SerializeObject(task), Encoding.UTF8, "application/json");
-            return await SendAsync<int>(request, cancellationToken);
+            return await SafeSendAsync<int>(request, cancellationToken);
         }
 
         public async Task UpdateTaskAsync(TaskDTO task, CancellationToken cancellationToken = default)
         {
             var request = await CreateRequestAsync(HttpMethod.Put, "api/Task/update-Task");
             request.Content = new StringContent(JsonConvert.SerializeObject(task), Encoding.UTF8, "application/json");
-            await SendAsync<string>(request, cancellationToken);
+            await SafeSendAsync<string>(request, cancellationToken);
         }
 
         // Turbine Endpoints
         public async Task<TurbineDTO> GetTurbineAsync(int id, CancellationToken cancellationToken = default) =>
-            await SendAsync<TurbineDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Turbine/get-Turbine?id={id}"), cancellationToken);
+            await SafeSendAsync<TurbineDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Turbine/get-Turbine?id={id}"), cancellationToken);
 
         public async Task<ICollection<TurbineDTO>> GetTurbinesAsync(CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<TurbineDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Turbine/get-Turbines"), cancellationToken);
+            await SafeSendAsync<ICollection<TurbineDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/Turbine/get-Turbines"), cancellationToken);
 
         public async Task<ICollection<TurbineDTO>> GetTurbinesIslandAsync(int id, CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<TurbineDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/Turbine/get-Turbines-Island?id={id}"), cancellationToken);
+            await SafeSendAsync<ICollection<TurbineDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/Turbine/get-Turbines-Island?id={id}"), cancellationToken);
 
         public async Task ActionTurbineAsync(string action, int value, int turbineId, CancellationToken cancellationToken = default)
         {
             var request = await CreateRequestAsync(HttpMethod.Post, "api/Turbine/action-Turbine", $"?action={action}&value={value}&Id={turbineId}");
-            await SendAsync<string>(request, cancellationToken);
+            await SafeSendAsync<string>(request, cancellationToken);
         }
 
         // User Endpoints
         public async Task<ICollection<UserDTO>> GetUsersAsync(CancellationToken cancellationToken = default) =>
-            await SendAsync<ICollection<UserDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/User/get-Users"), cancellationToken);
+            await SafeSendAsync<ICollection<UserDTO>>(await CreateRequestAsync(HttpMethod.Get, "api/User/get-Users"), cancellationToken);
 
         protected static void UpdateJsonSerializerSettings(JsonSerializerSettings settings)
         {
@@ -317,19 +364,35 @@ namespace OMA_App.API
         public int TurbineID { get; set; }
     }
 
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class DeviceDataDTO
     {
-        [JsonProperty("deviceDataID", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public int DeviceDataID { get; set; }
-
-        [JsonProperty("type", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Type { get; set; }
 
-        [JsonProperty("timestamp", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public DateTimeOffset Timestamp { get; set; }
+        [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset Timestamp { get; set; }
 
-        [JsonProperty("deviceID", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("deviceID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int DeviceID { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("turbineID", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int TurbineID { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("attributes", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<DeviceAttributeDTO> Attributes { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class DeviceAttributeDTO
+    {
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double Value { get; set; }
+
     }
 
     public enum LevelEnum

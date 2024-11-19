@@ -52,7 +52,7 @@ namespace OMA_App
                 PolicyRegistry registry = new();
                 registry.Add("myCachePolicy",
                     Polly.Policy.CacheAsync(serviceProvider.GetRequiredService<IAsyncCacheProvider>().AsyncFor<HttpResponseMessage>(),
-                        TimeSpan.FromSeconds(10)));
+                        TimeSpan.FromSeconds(30)));
                 return registry;
             });
 

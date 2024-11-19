@@ -3,6 +3,7 @@
     x:Class="OMA_App.Modals.IslandModal"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converter="clr-namespace:OMA_App.Converters"
     xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
     xmlns:models="clr-namespace:OMA_App.API"
     xmlns:vm="clr-namespace:OMA_App.ViewModels"
@@ -10,10 +11,15 @@
     HorizontalOptions="Center"
     VerticalOptions="Center">
 
+    <mct:Popup.Resources>
+        <ResourceDictionary>
+            <converter:DateTimeConverter x:Key="DateTimeConverter" />
+        </ResourceDictionary>
+    </mct:Popup.Resources>
 
     <VerticalStackLayout
+        Margin="20,20,20,80"
         Padding="0,10,0,0"
-          Margin="20,20,20,80"
         x:DataType="vm:IslandModalViewModel"
         Background="White">
         <Label
@@ -37,12 +43,27 @@
             Padding="5"
             Stroke="Black"
             WidthRequest="300">
-            <CollectionView ItemsSource="{Binding AttributeDTOs}" SelectionMode="None">
+            <CollectionView ItemsSource="{Binding DeviceDataDTOs}" SelectionMode="None">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:AttributeDTO">
+                    <DataTemplate x:DataType="models:DeviceDataDTO">
                         <StackLayout>
-                            <Label FontSize="14" Text="{Binding Name}" />
-                            <Label FontSize="12" Text="{Binding Value}" />
+                            <StackLayout Orientation="Horizontal">
+                            <Label FontSize="14" Text="Time: " />
+                            <Label FontSize="14" Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}}" />
+                            </StackLayout>
+                            <CollectionView ItemsSource="{Binding Attributes}" SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:DeviceAttributeDTO">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label FontSize="14" Text="{Binding Name}" />
+                                            <Label
+                                                Margin="10,0,0,0"
+                                                FontSize="14"
+                                                Text="{Binding Value}" />
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
@@ -51,8 +72,8 @@
 
         <HorizontalStackLayout Padding="25,10,0,10" Spacing="20">
             <Button
-                HorizontalOptions="Start"
                 Command="{Binding ChangeStateTurbineCommand}"
+                HorizontalOptions="Start"
                 Text="Change State"
                 VerticalOptions="Center" />
             <Button

@@ -58,7 +58,7 @@ namespace OMA_App.ViewModels
         {
             try
             {
-                bool result = await Application.Current.MainPage.DisplayAlert("Send drone?", "Do you wanna reserve a drone for this task?", "Yes", "No");
+                bool result = await Application.Current.MainPage.DisplayAlert("Send drone?", "Do you wanna reserve a drone for this task?", "no", "yes");
 
                 if (result)
                 {

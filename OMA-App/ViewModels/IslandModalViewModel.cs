@@ -14,7 +14,7 @@ namespace OMA_App.ViewModels
         private TurbineDTO turbineObj;
 
         [ObservableProperty]
-        private ObservableCollection<AttributeDTO> attributeDTOs = new();
+        private ObservableCollection<DeviceDataDTO> deviceDataDTOs = new();
 
         private readonly OMAClient _client;
         private readonly Action _closePopupAction;
@@ -32,13 +32,16 @@ namespace OMA_App.ViewModels
             try
             {
                 var turbine = await _client.GetTurbineAsync(id);
-                var attributeDTOstemp = await _client.GetAttributeDataByTurbineIdAsync(turbine.TurbineID);
+                var deviceDataDTOstemp = await _client.GetLatestDeviceDataByTurbineIdAsync(turbine.TurbineID);
 
-                TurbineObj = turbine;
-                AttributeDTOs.Clear();
-                foreach (var data in attributeDTOstemp)
+                if (deviceDataDTOstemp != null)
                 {
-                    AttributeDTOs.Add(data);
+                    TurbineObj = turbine;
+                    DeviceDataDTOs.Clear();
+                    foreach (var data in deviceDataDTOstemp)
+                    {
+                        DeviceDataDTOs.Add(data);
+                    }
                 }
             }
             catch (ApiException apiEx)

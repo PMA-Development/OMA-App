@@ -34,12 +34,15 @@ namespace OMA_App.ViewModels
                     return;
 
                 var templist = await _client.GetUserTasksAsync(userId);
-
-                Tasks.Clear();
-                foreach (var task in templist)
+                if (templist.Count != null)
                 {
-                    Tasks.Add(task);
+                    Tasks.Clear();
+                    foreach (var task in templist)
+                    {
+                        Tasks.Add(task);
+                    }
                 }
+               
             }
             catch (Exception e)
             {

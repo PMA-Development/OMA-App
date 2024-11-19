@@ -26,11 +26,16 @@ namespace OMA_App.ViewModels
             try
             {
                 var templist = await _client.GetUncompletedTasksAsync();
-                Tasks.Clear();
-                foreach (var task in templist)
+
+                if (templist.Count != null)
                 {
-                    Tasks.Add(task);
+                    Tasks.Clear();
+                    foreach (var task in templist)
+                    {
+                        Tasks.Add(task);
+                    }
                 }
+               
             }
             catch (Exception e)
             {
