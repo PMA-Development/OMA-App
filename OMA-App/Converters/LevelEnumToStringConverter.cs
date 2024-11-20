@@ -10,7 +10,7 @@ namespace OMA_App.Converters
 {
     public class LevelEnumToStringConverter : IValueConverter
     {
-        //TODO: Converter has a problem when you escalate a task more than twice before changing page
+  
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is LevelEnum level)
