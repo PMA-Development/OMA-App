@@ -25,6 +25,12 @@ namespace OMA_App.ViewModels
         {
             try
             {
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
                 var templist = await _client.GetUncompletedTasksAsync();
 
                 if (templist.Count != null)
@@ -46,7 +52,15 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task Accept(TaskDTO task)
         {
+
             bool result = await Application.Current.MainPage.DisplayAlert("Accept Task", "Do you want to accept this task?", "Yes", "No");
+
+            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("No connectivity!",
+                    $"Please check internet and try again.", "OK");
+                return;
+            }
 
             if (result)
             {
@@ -68,6 +82,12 @@ namespace OMA_App.ViewModels
             try
             {
                 string action = await Application.Current.MainPage.DisplayActionSheet("Escalate to?", "Cancel", null, "Level 1", "Level 2", "Level 3");
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
 
                 switch (action)
                 {

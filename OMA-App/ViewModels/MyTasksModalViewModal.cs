@@ -29,6 +29,12 @@ namespace OMA_App.ViewModels
         {
             try
             {
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
                 string result = await Application.Current.MainPage.DisplayPromptAsync("Write your finished Description", "");
 
                 if (string.IsNullOrWhiteSpace(result))

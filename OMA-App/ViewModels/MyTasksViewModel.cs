@@ -28,6 +28,13 @@ namespace OMA_App.ViewModels
         {
             try
             {
+                if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("No connectivity!",
+                        $"Please check internet and try again.", "OK");
+                    return;
+                }
+
                 Guid userId = Guid.Parse(await TokenService.GetUserIdAsync());
 
                 if (userId == Guid.Empty)

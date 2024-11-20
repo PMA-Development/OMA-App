@@ -68,7 +68,6 @@ namespace OMA_App
                 return new OMAClient(policyRegistry, Constants.APIURI, httpClient, httpClientPolicies);
             });
 
-            //builder.Services.AddScoped(sp => new OMAClient(Constants.APIURI, new HttpClient()));
 
             builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
 
