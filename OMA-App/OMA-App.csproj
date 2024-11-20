@@ -76,6 +76,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Polly" Version="8.5.0" />
 		<PackageReference Include="Polly.Caching.Memory" Version="3.0.2" />
+		<PackageReference Include="Syncfusion.Maui.Charts" Version="27.2.2" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.0" />
 	</ItemGroup>
 
@@ -99,6 +100,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\TasksPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TurbineGraphPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

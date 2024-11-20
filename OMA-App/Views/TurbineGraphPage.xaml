@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="OMA_App.Views.TurbineGraphPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:chart="clr-namespace:Syncfusion.Maui.Charts;assembly=Syncfusion.Maui.Charts"
+    Title="TurbineGraphPage">
+
+    <VerticalStackLayout Padding="20">
+        <Button
+            BackgroundColor="Transparent"
+            Command="{Binding ReturnCommand}"
+            FontSize="Medium"
+            HorizontalOptions="Start"
+            Text="Return"
+            TextColor="Black"
+            VerticalOptions="Start" />
+
+        <BoxView HeightRequest="20" BackgroundColor="Transparent"  Color="Transparent" />
+        <Label Text="Select Start Date" />
+        <DatePicker Date="{Binding StartDate, Mode=TwoWay}" />
+
+        <Label Text="Select End Date" />
+        <DatePicker Date="{Binding EndDate, Mode=TwoWay}" />
+
+
+        <Button Command="{Binding LoadDataCommand}" Text="Load Data" />
+
+        <BoxView HeightRequest="20"  BackgroundColor="Transparent" Color="Transparent" />
+        <chart:SfCartesianChart>
+
+            <chart:SfCartesianChart.Legend>
+                <chart:ChartLegend ToggleSeriesVisibility="True" />
+            </chart:SfCartesianChart.Legend>
+
+            <chart:SfCartesianChart.XAxes>
+                <chart:DateTimeAxis IntervalType="Days" />
+            </chart:SfCartesianChart.XAxes>
+
+
+            <chart:SfCartesianChart.YAxes>
+                <chart:NumericalAxis />
+            </chart:SfCartesianChart.YAxes>
+
+
+            <chart:LineSeries
+                EnableTooltip="True"
+                ItemsSource="{Binding TemperatureData}"
+                Label="Temperature"
+                XBindingPath="Timestamp"
+                YBindingPath="Value" />
+
+            <chart:LineSeries
+                EnableTooltip="True"
+                ItemsSource="{Binding HumidityData}"
+                Label="Humidity"
+                XBindingPath="Timestamp"
+                YBindingPath="Value" />
+
+            <chart:LineSeries
+                EnableTooltip="True"
+                ItemsSource="{Binding VoltageData}"
+                Label="Voltage"
+                XBindingPath="Timestamp"
+                YBindingPath="Value" />
+
+            <chart:LineSeries
+                EnableTooltip="True"
+                ItemsSource="{Binding AmpData}"
+                Label="AMP"
+                XBindingPath="Timestamp"
+                YBindingPath="Value" />
+        </chart:SfCartesianChart>
+    </VerticalStackLayout>
+</ContentPage>

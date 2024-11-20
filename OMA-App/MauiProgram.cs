@@ -13,6 +13,7 @@ using Polly.Caching;
 using Polly.Registry;
 using Polly;
 using OMA_App.Policies;
+using Syncfusion.Maui.Core.Hosting;
 
 namespace OMA_App
 {
@@ -25,6 +26,7 @@ namespace OMA_App
                 .UseMauiApp<App>()
                 // Initialize the .NET MAUI Community Toolkit by adding the below line of code
                 .UseMauiCommunityToolkit()
+                .ConfigureSyncfusionCore()
                 // After initializing the .NET MAUI Community Toolkit, optionally add additional fonts
                 .ConfigureFonts(fonts =>
                 {
@@ -93,6 +95,9 @@ namespace OMA_App
 
             builder.Services.AddTransient<AccountPageViewModel>();
             builder.Services.AddTransient<AccountPage>();
+
+            builder.Services.AddTransient<TurbineGraphPage>();
+            builder.Services.AddTransient<TurbineGraphViewModel>();
 
             builder.Services.AddSingleton<AuthenticationService>();
             builder.Services.AddSingleton<ErrorService>();

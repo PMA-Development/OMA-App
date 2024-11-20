@@ -25,8 +25,9 @@ namespace OMA_App
             Routing.RegisterRoute(nameof(IslandPage), typeof(IslandPage));
             Routing.RegisterRoute(nameof(MyTasksPage), typeof(MyTasksPage));
             Routing.RegisterRoute(nameof(TasksPage), typeof(TasksPage));
+            Routing.RegisterRoute(nameof(TurbineGraphPage), typeof(TurbineGraphPage));
 
- 
+
             InitializeLoginState();
 
         }

@@ -130,9 +130,13 @@ namespace OMA_App.API
 
 
         //DeviceData endpoints
-
+        
         public async Task<ICollection<DeviceDataDTO>> GetLatestDeviceDataByTurbineIdAsync(int id, CancellationToken cancellationToken = default) =>
             await SafeSendAsync<ICollection<DeviceDataDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/DeviceData/get-LatestDeviceDataByTurbineId?id={id}"), cancellationToken);
+
+        public async Task<ICollection<DeviceDataGraphDTO>> DeviceDataGraphByTurbineId(int id,DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default) =>
+           await SafeSendAsync<ICollection<DeviceDataGraphDTO>>(await CreateRequestAsync(HttpMethod.Get, $"api/DeviceData/get-DeviceDataGraphByTurbineId?Id={id}&startDate={startDate}&endDate={endDate}"), cancellationToken);
+
         // Drone Endpoints
         public async Task<DroneDTO> GetDroneAsync(int id, CancellationToken cancellationToken = default) =>
             await SafeSendAsync<DroneDTO>(await CreateRequestAsync(HttpMethod.Get, $"api/Drone/get-Drone?id={id}"), cancellationToken);
@@ -384,9 +388,25 @@ namespace OMA_App.API
 
     }
 
+
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class DeviceAttributeDTO
     {
+        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Name { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double Value { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class DeviceDataGraphDTO
+    {
+        [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTime Timestamp { get; set; }
+
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
 

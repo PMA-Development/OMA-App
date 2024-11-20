@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using OMA_App.ErrorServices;
+using OMA_App.Views;
 
 namespace OMA_App.ViewModels
 {
@@ -19,8 +20,8 @@ namespace OMA_App.ViewModels
         private readonly OMAClient _client;
         private readonly Action _closePopupAction;
 
-        public IslandModalViewModel(int turbineId, Action closePopupAction, OMAClient client, ErrorService errorService,IConnectivity connectivity)
-            : base(errorService,connectivity)
+        public IslandModalViewModel(int turbineId, Action closePopupAction, OMAClient client, ErrorService errorService, IConnectivity connectivity)
+            : base(errorService, connectivity)
         {
             _closePopupAction = closePopupAction;
             _client = client;
@@ -95,6 +96,15 @@ namespace OMA_App.ViewModels
                 }
 
 
+        }
+
+
+        [RelayCommand]
+        private async Task OpenGraph()
+        {
+            _closePopupAction?.Invoke();
+            await Application.Current.MainPage.Navigation.PushAsync(new TurbineGraphPage(_errorService, _connectivity, _client, TurbineObj.TurbineID));
+         
         }
 
         [RelayCommand]

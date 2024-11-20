@@ -48,8 +48,8 @@
                     <DataTemplate x:DataType="models:DeviceDataDTO">
                         <StackLayout>
                             <StackLayout Orientation="Horizontal">
-                            <Label FontSize="14" Text="Time: " />
-                            <Label FontSize="14" Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}}" />
+                                <Label FontSize="14" Text="Time: " />
+                                <Label FontSize="14" Text="{Binding Timestamp, Converter={StaticResource DateTimeConverter}}" />
                             </StackLayout>
                             <CollectionView ItemsSource="{Binding Attributes}" SelectionMode="None">
                                 <CollectionView.ItemTemplate>
@@ -70,11 +70,16 @@
             </CollectionView>
         </Border>
 
-        <HorizontalStackLayout Padding="25,10,0,10" Spacing="20">
+        <HorizontalStackLayout Padding="10,10,0,10" Spacing="5">
             <Button
                 Command="{Binding ChangeStateTurbineCommand}"
                 HorizontalOptions="Start"
                 Text="Change State"
+                VerticalOptions="Center" />
+            <Button
+                Command="{Binding OpenGraphCommand}"
+                HorizontalOptions="Start"
+                Text="Open Graph"
                 VerticalOptions="Center" />
             <Button
                 Command="{Binding CloseCommand}"
