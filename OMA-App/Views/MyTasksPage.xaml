@@ -9,67 +9,68 @@
     Title="MyTasksPage"
     x:DataType="vm:MyTasksViewModel">
 
-
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converter:LevelEnumToStringConverter x:Key="LevelEnumToStringConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
-    <CollectionView x:Name="_collectionView" ItemsSource="{Binding Tasks}">
-        <CollectionView.Header>
-            <SearchBar Placeholder="Search items..." />
-        </CollectionView.Header>
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="models:TaskDTO">
-                <Frame Margin="10">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width=".8*" />
-                        </Grid.ColumnDefinitions>
-                        <VerticalStackLayout
+   
+        <ContentPage.Resources>
+            <ResourceDictionary>
+                <converter:LevelEnumToStringConverter x:Key="LevelEnumToStringConverter" />
+            </ResourceDictionary>
+        </ContentPage.Resources>
+    <RefreshView  IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <CollectionView x:Name="_collectionView" ItemsSource="{Binding Tasks}">
+            <CollectionView.Header>
+                <SearchBar Placeholder="Search items..." />
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TaskDTO">
+                    <Frame Margin="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width=".8*" />
+                            </Grid.ColumnDefinitions>
+                            <VerticalStackLayout
                             Grid.Row="0"
                             Grid.Column="1"
                             Padding="5"
                             VerticalOptions="Center">
-                            <Label
+                                <Label
                                 FontAttributes="Bold"
                                 FontSize="Medium"
                                 Text="{Binding Title}" />
-                            <BoxView
+                                <BoxView
                                 HeightRequest="2"
                                 HorizontalOptions="Fill"
                                 Color="Gray" />
-                            <Label
+                                <Label
                                 FontAttributes="Bold"
                                 FontSize="Medium"
                                 Text="{Binding Type}" />
-                            <Label
+                                <Label
                                 FontAttributes="Bold"
                                 FontSize="Medium"
                                 Text="{Binding Description}" />
-                            <Label
+                                <Label
                                 FontAttributes="Bold"
                                 FontSize="Medium"
                                 Text="{Binding Level, Converter={StaticResource LevelEnumToStringConverter}}" />
-                            <HorizontalStackLayout Margin="0,20,0,0" Spacing="20">
-                                <Button
+                                <HorizontalStackLayout Margin="0,20,0,0" Spacing="20">
+                                    <Button
                                     Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.ViewTaskCommand}"
                                     CommandParameter="{Binding .}"
                                     HorizontalOptions="Start"
                                     Text="View"
                                     VerticalOptions="Center" />
-                                <Button
+                                    <Button
                                     Command="{Binding Source={x:Reference _collectionView}, Path=BindingContext.EscalateTaskCommand}"
                                     CommandParameter="{Binding .}"
                                     HorizontalOptions="End"
                                     Text="Escalate"
                                     VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Grid>
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
 </ContentPage>

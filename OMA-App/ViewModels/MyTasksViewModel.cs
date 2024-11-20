@@ -71,6 +71,14 @@ namespace OMA_App.ViewModels
         }
 
         [RelayCommand]
+        private async Task Refresh()
+        {
+            IsRefreshing = true;
+           await LoadTasks();
+            IsRefreshing = false;
+        }
+
+        [RelayCommand]
         private async Task EscalateTask(TaskDTO task)
         {
             try

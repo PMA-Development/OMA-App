@@ -50,7 +50,7 @@ namespace OMA_App.ViewModels
             }
         }
 
-        private async void GetTurbinesWithTasks()
+        private async Task GetTurbinesWithTasks()
         {
             try
             {
@@ -103,7 +103,13 @@ namespace OMA_App.ViewModels
             }
         }
 
-
+        [RelayCommand]
+        private async Task Refresh()
+        {
+            IsRefreshing = true;
+             GetTurbinesWithTasks();
+            IsRefreshing = false;
+        }
         private void PerformSearch()
         {
             if (string.IsNullOrWhiteSpace(SearchText))

@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace OMA_App.ViewModels
 {
-    public class BaseViewModel : ObservableObject
+    public partial class BaseViewModel : ObservableObject
     {
+        [ObservableProperty]
+        private bool isRefreshing;
         protected ErrorService _errorService { get; }
         protected IConnectivity _connectivity;
         public BaseViewModel(ErrorService errorService, IConnectivity connectivity)

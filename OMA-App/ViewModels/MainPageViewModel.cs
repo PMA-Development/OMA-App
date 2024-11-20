@@ -13,8 +13,7 @@ namespace OMA_App.ViewModels
     {
         private readonly OMAClient _client;
 
-        [ObservableProperty]
-        private bool isRefreshing;
+        
         public ObservableCollection<IslandTask> IslandsWithTasks { get; set; } = new();
         public ObservableCollection<IslandDTO> Islands { get; set; } = new();
         public ObservableCollection<TaskDTO> TaskDTOs { get; set; } = new();

@@ -7,13 +7,13 @@
              xmlns:model="clr-namespace:OMA_App.Models"
              x:Class="OMA_App.Views.IslandPage"
              x:DataType="vm:IslandPageViewModel">
-
-    <CollectionView x:Name="_collectionView"
+    <RefreshView  IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <CollectionView x:Name="_collectionView"
                     ItemsSource="{Binding TurbinesTasks}"
                     ItemsLayout="VerticalGrid, 2">
-        <CollectionView.Header>
-            <VerticalStackLayout>
-                <Button Command="{Binding ReturnCommand}"
+            <CollectionView.Header>
+                <VerticalStackLayout>
+                    <Button Command="{Binding ReturnCommand}"
                         Text="Return" 
                         TextColor="Black" 
                         BackgroundColor="Transparent"
@@ -21,34 +21,35 @@
                         HorizontalOptions="Start"
                         FontSize="Medium" />
 
-                <SearchBar Placeholder="Search items..."
+                    <SearchBar Placeholder="Search items..."
                            Text="{Binding SearchText}" />
-            </VerticalStackLayout>
-        </CollectionView.Header>
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="model:TurbineTask">
-                <Frame Margin="10" Padding="0">
-                    <Grid>
-                        <VerticalStackLayout>
-                            <VerticalStackLayout.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IslandPageViewModel}}, Path=OpenTurbineCommand}" x:DataType="model:TurbineTask" CommandParameter="{Binding TurbineId}" />
-                            </VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:TurbineTask">
+                    <Frame Margin="10" Padding="0">
+                        <Grid>
+                            <VerticalStackLayout>
+                                <VerticalStackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IslandPageViewModel}}, Path=OpenTurbineCommand}" x:DataType="model:TurbineTask" CommandParameter="{Binding TurbineId}" />
+                                </VerticalStackLayout.GestureRecognizers>
 
-                            <Label Padding="10, 5, 0, 5" Text="{Binding Title}" FontSize="Medium" FontAttributes="Bold" />
-                            <BoxView Color="Gray" HeightRequest="2" HorizontalOptions="Fill" />
+                                <Label Padding="10, 5, 0, 5" Text="{Binding Title}" FontSize="Medium" FontAttributes="Bold" />
+                                <BoxView Color="Gray" HeightRequest="2" HorizontalOptions="Fill" />
 
-                            <CollectionView ItemsSource="{Binding TaskDTOs}" HeightRequest="150">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="dto:TaskDTO">
-                                        <Label Text="{Binding Title}" BackgroundColor="LightGreen" FontSize="Medium" FontAttributes="Bold" Padding="20,0,0,10"/>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
+                                <CollectionView ItemsSource="{Binding TaskDTOs}" HeightRequest="150">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate x:DataType="dto:TaskDTO">
+                                            <Label Text="{Binding Title}" BackgroundColor="LightGreen" FontSize="Medium" FontAttributes="Bold" Padding="20,0,0,10"/>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
 
-                        </VerticalStackLayout>
-                    </Grid>
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
 </ContentPage>
