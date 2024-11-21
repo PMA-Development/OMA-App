@@ -173,6 +173,9 @@ namespace OMA_App.ViewModels
         [RelayCommand]
         private async Task CreateTask()
         {
+
+            if (!ValidateTask())
+                return; 
             try
             {
                 if (_connectivity.NetworkAccess != NetworkAccess.Internet)
@@ -181,15 +184,18 @@ namespace OMA_App.ViewModels
                         $"Please check internet and try again.", "OK");
                     return;
                 }
-                Task.Level = LevelEnum._1;
-                Task.FinishDescription = "";
-                Task.OwnerID = Guid.Parse(await TokenService.GetUserIdAsync());
+               
+                    Task.Level = LevelEnum._1;
+                    Task.FinishDescription = "";
+                    Task.OwnerID = Guid.Parse(await TokenService.GetUserIdAsync());
 
-                int result = await _client.AddTaskAsync(Task);
+                    int result = await _client.AddTaskAsync(Task);
 
-                await _errorService.DisplayAlertAsync("Success", "Task has been created successfully");
+                    await _errorService.DisplayAlertAsync("Success", "Task has been created successfully");
 
-                ResetFields();
+                    ResetFields();
+                
+              
             }
             catch (ApiException apiEx)
             {
@@ -203,6 +209,35 @@ namespace OMA_App.ViewModels
             {
                 await _errorService.DisplayAlertAsync("Error", $"An unexpected error occurred: {ex.Message}");
             }
+
+        }
+
+        private bool ValidateTask()
+        {
+            var errors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(Task.Title))
+                errors.Add("Title is required.");
+
+            if (string.IsNullOrWhiteSpace(Task.Type))
+                errors.Add("Task Type is required.");
+
+            if (string.IsNullOrWhiteSpace(Task.Description))
+                errors.Add("Description is required.");
+
+            if (SelectedIsland == null)
+                errors.Add("Island must be selected.");
+
+            if (SelectedTurbine == null)
+                errors.Add("Turbine must be selected.");
+
+            if (errors.Any())
+            {
+                _errorService.DisplayAlertAsync("Validation Errors", string.Join("\n", errors));
+                return false;
+            }
+
+            return true;
         }
     }
 }

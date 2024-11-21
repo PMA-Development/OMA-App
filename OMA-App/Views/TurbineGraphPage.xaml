@@ -16,17 +16,22 @@
             TextColor="Black"
             VerticalOptions="Start" />
 
-        <BoxView HeightRequest="20" BackgroundColor="Transparent"  Color="Transparent" />
+        <BoxView
+            BackgroundColor="Transparent"
+            HeightRequest="20"
+            Color="Transparent" />
         <Label Text="Select Start Date" />
-        <DatePicker Date="{Binding StartDate, Mode=TwoWay}" />
+        <DatePicker Date="{Binding StartDate, Mode=TwoWay}" MaximumDate="{Binding EndDate}" />
 
         <Label Text="Select End Date" />
-        <DatePicker Date="{Binding EndDate, Mode=TwoWay}" />
-
+        <DatePicker Date="{Binding EndDate, Mode=TwoWay}" MinimumDate="{Binding StartDate}" />
 
         <Button Command="{Binding LoadDataCommand}" Text="Load Data" />
 
-        <BoxView HeightRequest="20"  BackgroundColor="Transparent" Color="Transparent" />
+        <BoxView
+            BackgroundColor="Transparent"
+            HeightRequest="20"
+            Color="Transparent" />
         <chart:SfCartesianChart>
 
             <chart:SfCartesianChart.Legend>
