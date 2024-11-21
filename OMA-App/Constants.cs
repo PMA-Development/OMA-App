@@ -9,13 +9,13 @@ namespace OMA_App
     public static class Constants
     {
         // OIDC Configuration
-        public static readonly string Authority = "https://web2.pcsyd.dk";
-        public static readonly string ClientId = "OMA-Maui";
+        public static readonly string Authority = "";
+        public static readonly string ClientId = "";
         public static readonly string Scope = "openid profile role";
         public static readonly string PostLogoutRedirectUri = "myapp://auth";
         public static readonly string RedirectUri = "myapp://auth";
 
         // API Configuration
-        public static readonly string APIURI = "https://2g4np93d-6001.euw.devtunnels.ms";
+        public static readonly string APIURI = "";
     }
 }
