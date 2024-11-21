@@ -41,7 +41,7 @@ namespace OMA_App.ViewModels
                     return;
 
                 var templist = await _client.GetUserTasksAsync(userId);
-                if (templist.Count != null)
+                if (templist != null)
                 {
                     Tasks.Clear();
                     foreach (var task in templist)

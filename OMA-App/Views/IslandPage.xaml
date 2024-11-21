@@ -21,8 +21,6 @@
                         HorizontalOptions="Start"
                         FontSize="Medium" />
 
-                    <SearchBar Placeholder="Search items..."
-                           Text="{Binding SearchText}" />
                 </VerticalStackLayout>
             </CollectionView.Header>
             <CollectionView.ItemTemplate>

@@ -18,9 +18,7 @@
     <RefreshView  IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
         <CollectionView x:Name="_collectionView" ItemsSource="{Binding Tasks}">
             <CollectionView.Header>
-                <VerticalStackLayout>
-                    <SearchBar Placeholder="Search items..." />
-                </VerticalStackLayout>
+
             </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:TaskDTO">
